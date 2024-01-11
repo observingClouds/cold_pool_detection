@@ -8,7 +8,7 @@ This repository uses [dvc](dvc.org) to keep track of workflows and data.
 # Reproduce results
 dvc repro
 
-# Retrieve data e.g. images from data remote
+# Retrieve data e.g. images from data remote (without the need to reprocess)
 dvc pull
 ```
 
