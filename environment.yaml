@@ -1,0 +1,15 @@
+name: cpd
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - xarray
+  - intake-xarray
+  - zarr
+  - dvc
+  - s3fs
+  - ipython
+  - ca-certificates
+  - certifi
+  - openssl
+  - dvc-s3
