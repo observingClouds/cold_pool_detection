@@ -17,3 +17,8 @@ The workflow assumes that the python environment as given in `environment.yaml` 
 ```
 mamba env create -f environment.yaml
 ```
+
+## Contribution
+
+> [!NOTE]
+> The data remote is a AWS bucket that only allows annonymous reads. To push to the remote, access needs to be granted and the credentials be activated. The latter can be achieved by running `aws configure` and provide the credentials as given on the AWS webpage.
