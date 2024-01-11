@@ -1,0 +1,15 @@
+schema: '2.0'
+stages:
+  download_example_SAR:
+    cmd: python src/data/download_SAR.py
+    deps:
+    - path: src/data/download_SAR.py
+      hash: md5
+      md5: 884a746d8cd27710c6d2b043f4d7b4a6
+      size: 1147
+    outs:
+    - path: data/SAR/
+      hash: md5
+      md5: 72bb7da7eb810766ad63f828ca33f3ff.dir
+      size: 53385440
+      nfiles: 4
