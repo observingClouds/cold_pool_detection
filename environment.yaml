@@ -13,3 +13,4 @@ dependencies:
   - certifi
   - openssl
   - dvc-s3
+  - pre-commit
