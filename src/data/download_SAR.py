@@ -1,3 +1,9 @@
+"""Script to download SAR images from ASF.
+
+References:
+https://github.com/asfadmin/Discovery-asf_search/blob/master/examples/5-Download.ipynb
+"""
+
 import getpass
 import os
 
