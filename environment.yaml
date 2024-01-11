@@ -14,3 +14,6 @@ dependencies:
   - openssl
   - dvc-s3
   - pre-commit
+  - pip
+  - pip:
+    - asf_search

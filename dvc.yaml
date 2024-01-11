@@ -1,0 +1,7 @@
+stages:
+  download_example_SAR:
+    cmd: python src/data/download_SAR.py
+    deps:
+    - src/data/download_SAR.py
+    outs:
+    - data/SAR/
