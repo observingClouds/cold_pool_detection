@@ -1,0 +1,5 @@
+outs:
+- md5: 6dc06c9ffda8393abbf6e29c46139f60
+  size: 337050
+  hash: md5
+  path: MODIS_VIS_20200110.jpg
