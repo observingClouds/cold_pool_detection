@@ -13,6 +13,9 @@ dependencies:
   - certifi
   - openssl
   - dvc-s3
+  - scipy
+  - matplotlib
+  - ipdb
   - pre-commit
   - pip
   - pip:
