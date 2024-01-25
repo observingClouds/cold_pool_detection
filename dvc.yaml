@@ -6,16 +6,16 @@ stages:
     outs:
     - data/SAR/
   regrid_SAR:
-    cmd: python src/data/regrid_SAR.py -v owiWindSpeed -i data/examples/SAR_WindSpeed_20200213.png
+    cmd: python src/data/regrid_SAR.py -v owiWindSpeed -i data/examples/SAR_WindSpeed_20200113.png
     deps:
     - src/data/regrid_SAR.py
     - data/SAR/
     outs:
-    - data/examples/SAR_WindSpeed_20200213.png
+    - data/examples/SAR_WindSpeed_20200113.png
   regrid_GOES16_ABI:
-    cmd: python src/data/regrid_GOES.py -f data/GOES16/OR_ABI-L1b-RadF-M6C13_G16_s20200442200028_e20200442209348_c20200442209435.nc -c C13 -i data/examples/GOES16-ABI_BT_C13_20202132200.png
+    cmd: python src/data/regrid_GOES.py -f data/GOES16/OR_ABI-L1b-RadF-M6C13_G16_s20200130940200_e20200130949519_c20200130950003.nc -c C13 -i data/examples/GOES16-ABI_BT_C13_20201130940.png
     deps:
     - src/data/regrid_GOES.py
-    - data/GOES16/OR_ABI-L1b-RadF-M6C13_G16_s20200442200028_e20200442209348_c20200442209435.nc
+    - data/GOES16/OR_ABI-L1b-RadF-M6C13_G16_s20200130940200_e20200130949519_c20200130950003.nc
     outs:
-    - data/examples/GOES16-ABI_BT_C13_20202132200.png
+    - data/examples/GOES16-ABI_BT_C13_20201130940.png

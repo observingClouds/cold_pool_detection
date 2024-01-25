@@ -5,8 +5,8 @@ stages:
     deps:
     - path: src/data/download_SAR.py
       hash: md5
-      md5: bc007819a23251618e68dfeebce05c17
-      size: 1642
+      md5: 8f030f66a1ddfe9b78cfdf09f44cf2a2
+      size: 1654
     outs:
     - path: data/SAR/
       hash: md5
@@ -15,25 +15,25 @@ stages:
       nfiles: 4
   regrid_GOES16_ABI:
     cmd: python src/data/regrid_GOES.py -f
-      data/GOES16/OR_ABI-L1b-RadF-M6C13_G16_s20200442200028_e20200442209348_c20200442209435.nc
-      -c C13 -i data/examples/GOES16-ABI_BT_C13_20202132200.png
+      data/GOES16/OR_ABI-L1b-RadF-M6C13_G16_s20200130940200_e20200130949519_c20200130950003.nc
+      -c C13 -i data/examples/GOES16-ABI_BT_C13_20201130940.png
     deps:
     - path:
-        data/GOES16/OR_ABI-L1b-RadF-M6C13_G16_s20200442200028_e20200442209348_c20200442209435.nc
+        data/GOES16/OR_ABI-L1b-RadF-M6C13_G16_s20200130940200_e20200130949519_c20200130950003.nc
       hash: md5
-      md5: d31798ca5439c87ac08130f85bf7ed3e
-      size: 29578734
+      md5: b608906791607bebb3b5a30836cdc6d3
+      size: 29511412
     - path: src/data/regrid_GOES.py
       hash: md5
-      md5: e152194bc6d7ea0602f3755eafe1b87b
-      size: 1304
+      md5: c26934347bfe66cb31917ffefe475696
+      size: 1340
     outs:
-    - path: data/examples/GOES16-ABI_BT_C13_20202132200.png
+    - path: data/examples/GOES16-ABI_BT_C13_20201130940.png
       hash: md5
-      md5: fb4f342705e1e852f66bf7d32ee013e2
-      size: 1239798
+      md5: a1a6db3347a3f101b05f7b658b862ca3
+      size: 1232008
   regrid_SAR:
-    cmd: python src/data/regrid_SAR.py -v owiWindSpeed -i data/examples/SAR_WindSpeed_20200213.png
+    cmd: python src/data/regrid_SAR.py -v owiWindSpeed -i data/examples/SAR_WindSpeed_20200113.png
     deps:
     - path: data/SAR/
       hash: md5
@@ -42,10 +42,10 @@ stages:
       nfiles: 4
     - path: src/data/regrid_SAR.py
       hash: md5
-      md5: 574f6ae4fb1462206bfec74c468a18b7
-      size: 2547
+      md5: e6c739aaf59133f54ec0724164e26271
+      size: 2561
     outs:
-    - path: data/examples/SAR_WindSpeed_20200213.png
+    - path: data/examples/SAR_WindSpeed_20200113.png
       hash: md5
       md5: 1d67768628d284af064dcd62145af54f
       size: 228504
