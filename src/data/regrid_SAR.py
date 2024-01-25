@@ -1,5 +1,6 @@
 """Regrid irregularly spaced SAR data to regular grid."""
 
+import argparse
 import glob
 
 import matplotlib.pyplot as plt
@@ -36,6 +37,13 @@ def merge(dss):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Regrid SAR data to regular grid")
+    parser.add_argument("-i", "--image", type=str, help="Output filename for the figure")
+    parser.add_argument(
+        "-v", "--variable", type=str, help="Variable name of SAR dataset"
+    )
+    args = parser.parse_args()
+
     out_def = output_area(7.5, 17, -60.25, -45, 0.01)
 
     file_pattern = "data/SAR/*/measurement/*.nc"
@@ -51,11 +59,11 @@ if __name__ == "__main__":
         resampler = XArrayResamplerNN(in_def, out_def, radius_of_influence=5000)
         resampler.get_neighbour_info()
         result = resampler.get_sample_from_neighbour_info(
-            ds.owiWindSpeed.rename({"owiAzSize": "y", "owiRaSize": "x"})
+            ds[args.variable].rename({"owiAzSize": "y", "owiRaSize": "x"})
         )
 
         ds_grid = xr.Dataset(
-            {"owiWindSpeed": result.rename({"y": "latitude", "x": "longitude"})}
+            {args.variable: result.rename({"y": "latitude", "x": "longitude"})}
         )
 
         # Add gridded dataset
@@ -69,5 +77,7 @@ if __name__ == "__main__":
     ax = plt.Axes(fig, [0.0, 0.0, 1.0, 1.0])
     ax.set_axis_off()
     fig.add_axes(ax)
-    ax.imshow(ds_combined.owiWindSpeed)
-    plt.savefig("data/examples/SAR_WindSpeed_20200213.png", dpi=200, pad_inches=0)
+    ax.imshow(ds_combined[args.variable])
+
+    # Save the figure with the specified filename
+    plt.savefig(args.image, dpi=200, pad_inches=0)
