@@ -2,6 +2,7 @@
 
 import glob
 
+import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
 from pyresample.geometry import AreaDefinition, GridDefinition
@@ -26,33 +27,6 @@ def output_area(lat_min, lat_max, lon_min, lon_max, resolution):
     )
 
 
-out_def = output_area(7.5, 17, -60.25, -45, 0.01)
-
-file_pattern = "../../data/SAR/*/measurement/*.nc"
-
-# Loop over files of one timestep to merge them in one gridded dataset
-dss = []
-for file in glob.glob(file_pattern):
-    ds = xr.open_dataset(file)
-
-    lon, lat = (ds.owiLon, ds.owiLat)
-    in_def = GridDefinition(lons=lon.values, lats=lat.values)
-
-    resampler = XArrayResamplerNN(in_def, out_def, radius_of_influence=5000)
-    resampler.get_neighbour_info()
-    result = resampler.get_sample_from_neighbour_info(
-        ds.owiWindSpeed.rename({"owiAzSize": "y", "owiRaSize": "x"})
-    )
-
-    ds_grid = xr.Dataset(
-        {"owiWindSpeed": result.rename({"y": "latitude", "x": "longitude"})}
-    )
-
-    # Add gridded dataset
-    dss.append(ds_grid)
-
-
-# Merge all gridded datasets
 def merge(dss):
     init_val = dss[0].load()
     for ds in dss[1:]:
@@ -61,4 +35,39 @@ def merge(dss):
     return init_val
 
 
-ds_combined = merge(dss)
+if __name__ == "__main__":
+    out_def = output_area(7.5, 17, -60.25, -45, 0.01)
+
+    file_pattern = "data/SAR/*/measurement/*.nc"
+
+    # Loop over files of one timestep to merge them in one gridded dataset
+    dss = []
+    for file in glob.glob(file_pattern):
+        ds = xr.open_dataset(file)
+
+        lon, lat = (ds.owiLon, ds.owiLat)
+        in_def = GridDefinition(lons=lon.values, lats=lat.values)
+
+        resampler = XArrayResamplerNN(in_def, out_def, radius_of_influence=5000)
+        resampler.get_neighbour_info()
+        result = resampler.get_sample_from_neighbour_info(
+            ds.owiWindSpeed.rename({"owiAzSize": "y", "owiRaSize": "x"})
+        )
+
+        ds_grid = xr.Dataset(
+            {"owiWindSpeed": result.rename({"y": "latitude", "x": "longitude"})}
+        )
+
+        # Add gridded dataset
+        dss.append(ds_grid)
+
+    # Merge all gridded datasets
+    ds_combined = merge(dss)
+
+    dpi = 200
+    fig = plt.figure(figsize=(1525 / dpi, 950 / dpi), dpi=dpi)
+    ax = plt.Axes(fig, [0.0, 0.0, 1.0, 1.0])
+    ax.set_axis_off()
+    fig.add_axes(ax)
+    ax.imshow(ds_combined.owiWindSpeed)
+    plt.savefig("data/examples/SAR_WindSpeed_20200213.png", dpi=200, pad_inches=0)

@@ -1,0 +1,13 @@
+md5: d452b2a20a6d2816d004605958ccdeba
+frozen: true
+deps:
+- checksum: '"5bebacddb292dabe895030e705024b5f-4"'
+  size: 29578734
+  hash: md5
+  path:
+    https://noaa-goes16.s3.amazonaws.com/ABI-L1b-RadF/2020/044/22/OR_ABI-L1b-RadF-M6C13_G16_s20200442200028_e20200442209348_c20200442209435.nc
+outs:
+- md5: d31798ca5439c87ac08130f85bf7ed3e
+  size: 29578734
+  hash: md5
+  path: OR_ABI-L1b-RadF-M6C13_G16_s20200442200028_e20200442209348_c20200442209435.nc
