@@ -1,7 +1,21 @@
 stages:
   download_example_SAR:
-    cmd: python src/data/download_SAR.py
+    cmd: python src/data/download_SAR.py --start "2020-01-13T00:00:00Z" --end "2020-01-13T23:59:59Z"
     deps:
     - src/data/download_SAR.py
     outs:
     - data/SAR/
+  regrid_SAR:
+    cmd: python src/data/regrid_SAR.py -v owiWindSpeed -i data/examples/SAR_WindSpeed_20200213.png
+    deps:
+    - src/data/regrid_SAR.py
+    - data/SAR/
+    outs:
+    - data/examples/SAR_WindSpeed_20200213.png
+  regrid_GOES16_ABI:
+    cmd: python src/data/regrid_GOES.py -f data/GOES16/OR_ABI-L1b-RadF-M6C13_G16_s20200442200028_e20200442209348_c20200442209435.nc -c C13 -i data/examples/GOES16-ABI_BT_C13_20202132200.png
+    deps:
+    - src/data/regrid_GOES.py
+    - data/GOES16/OR_ABI-L1b-RadF-M6C13_G16_s20200442200028_e20200442209348_c20200442209435.nc
+    outs:
+    - data/examples/GOES16-ABI_BT_C13_20202132200.png
