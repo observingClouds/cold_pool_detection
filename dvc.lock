@@ -1,12 +1,12 @@
 schema: '2.0'
 stages:
   download_example_SAR:
-    cmd: python src/data/download_SAR.py
+    cmd: python src/data/download_SAR.py --start "2020-01-13T00:00:00Z" --end "2020-01-13T23:59:59Z"
     deps:
     - path: src/data/download_SAR.py
       hash: md5
-      md5: a6daf498486ceda2e74555f3c31c5627
-      size: 1295
+      md5: bc007819a23251618e68dfeebce05c17
+      size: 1642
     outs:
     - path: data/SAR/
       hash: md5
@@ -32,3 +32,20 @@ stages:
       hash: md5
       md5: fb4f342705e1e852f66bf7d32ee013e2
       size: 1239798
+  regrid_SAR:
+    cmd: python src/data/regrid_SAR.py -v owiWindSpeed -i data/examples/SAR_WindSpeed_20200213.png
+    deps:
+    - path: data/SAR/
+      hash: md5
+      md5: 72bb7da7eb810766ad63f828ca33f3ff.dir
+      size: 53385440
+      nfiles: 4
+    - path: src/data/regrid_SAR.py
+      hash: md5
+      md5: 574f6ae4fb1462206bfec74c468a18b7
+      size: 2547
+    outs:
+    - path: data/examples/SAR_WindSpeed_20200213.png
+      hash: md5
+      md5: 1d67768628d284af064dcd62145af54f
+      size: 228504
