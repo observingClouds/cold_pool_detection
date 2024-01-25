@@ -1,6 +1,6 @@
 stages:
   download_example_SAR:
-    cmd: python src/data/download_SAR.py
+    cmd: python src/data/download_SAR.py --start "2020-01-13T00:00:00Z" --end "2020-01-13T23:59:59Z"
     deps:
     - src/data/download_SAR.py
     outs:

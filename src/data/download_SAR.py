@@ -4,12 +4,22 @@ References:
 https://github.com/asfadmin/Discovery-asf_search/blob/master/examples/5-Download.ipynb
 """
 
+import argparse
 import getpass
 import os
 
 import asf_search as asf
 
-token = getpass.getpass("EDL Token:")
+parser = argparse.ArgumentParser(description="Download SAR images from ASF")
+parser.add_argument(
+    "--start", type=str, help="Start date in ISO 8601 format (YYYY-MM-DDThh:mm:ssZ)"
+)
+parser.add_argument(
+    "--end", type=str, help="End date in ISO 8601 format (YYYY-MM-DDThh:mm:ssZ)"
+)
+args = parser.parse_args()
+
+token = getpass.getpass("EDL Token (login to earthdata.nasa.gov to get personal token):")
 token_session = asf.ASFSession().auth_with_token(token)
 
 lats = (7.5, 17)
@@ -23,8 +33,8 @@ aoi = (
 
 opts = {
     "platform": asf.PLATFORM.SENTINEL1,
-    "start": "2020-01-13T00:00:00Z",
-    "end": "2020-01-13T23:59:59Z",
+    "start": args.start,
+    "end": args.end,
     "processingLevel": asf.PRODUCT_TYPE.OCN,
     "flightDirection": asf.FLIGHT_DIRECTION.DESCENDING,
     "beamMode": asf.BEAMMODE.IW,
