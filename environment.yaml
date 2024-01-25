@@ -13,10 +13,10 @@ dependencies:
   - certifi
   - openssl
   - dvc-s3
-  - scipy
   - matplotlib
   - ipdb
   - pre-commit
+  - pyresample
   - pip
   - pip:
     - asf_search
