@@ -17,6 +17,18 @@ parser.add_argument(
 parser.add_argument(
     "--end", type=str, help="End date in ISO 8601 format (YYYY-MM-DDThh:mm:ssZ)"
 )
+parser.add_argument(
+    "--product",
+    type=str,
+    help="Processing level/ Product type",
+    default=asf.PRODUCT_TYPE.OCN,
+)
+parser.add_argument(
+    "--output",
+    type=str,
+    help="Output directory for extracted files",
+    default="./data/SAR",
+)
 args = parser.parse_args()
 
 token = getpass.getpass("EDL Token (login to earthdata.nasa.gov to get personal token):")
@@ -35,7 +47,7 @@ opts = {
     "platform": asf.PLATFORM.SENTINEL1,
     "start": args.start,
     "end": args.end,
-    "processingLevel": asf.PRODUCT_TYPE.OCN,
+    "processingLevel": args.product,
     "flightDirection": asf.FLIGHT_DIRECTION.DESCENDING,
     "beamMode": asf.BEAMMODE.IW,
 }
@@ -43,15 +55,22 @@ opts = {
 results = asf.geo_search(intersectsWith=aoi, **opts)
 print(f"{len(results)} results found")
 
+if not os.path.exists(args.output):
+    os.makedirs(args.output)
+
 for result_within_zip in results[1:]:
     with result_within_zip.remotezip(session=token_session) as z:
-        file_paths = [
-            file.filename for file in z.filelist if file.filename.endswith(".nc")
-        ]
+        if args.product == asf.PRODUCT_TYPE.OCN:
+            file_paths = [
+                file.filename
+                for file in z.filelist
+                if file.filename.endswith(".grd") or file.filename.endswith(".nc")
+            ]
+        else:
+            file_paths = [file.filename for file in z.filelist]
 
         print(f"found {len(file_paths)} nc files in zip")
 
         for file_path in file_paths:
-            extract_path = "./data/SAR"
-            os.makedirs(extract_path, exist_ok=True)
+            extract_path = args.output
             z.extract(file_path, path=extract_path)
