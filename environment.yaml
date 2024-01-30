@@ -18,6 +18,7 @@ dependencies:
   - ipdb
   - pre-commit
   - pyresample
+  - xee
   - pip
   - pip:
     - asf_search
