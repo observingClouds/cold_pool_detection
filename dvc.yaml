@@ -30,18 +30,21 @@ stages:
     deps:
     - src/data/download_SAR_EE.py
     outs:
-    - data/SAR/GRD_EE/
+    - data/SAR/GRD_EE/:
+        cache: false
   reproduce_Brilouet2023_fig3:
     cmd: python src/gradient_detection_SAR_brilouet_etal_2023.py -i data/SAR/GRD_EE/SENTINEL-1_2020-02-13T00:00:00Z_2020-02-13T23:59:59Z_GRD_HD_DESCENDING_IW.nc -o data/figures/brilouet_etal_2023_fig3 --lat_start=10.1 --lat_end=9.7 --lon_start=-58 --lon_end=-57.3
     deps:
     - src/gradient_detection_SAR_brilouet_etal_2023.py
     - data/SAR/GRD_EE/
     outs:
-    - data/figures/brilouet_etal_2023_fig3
+    - data/figures/brilouet_etal_2023_fig3:
+        remote: figures
   reproduce_Brilouet2023_fig2a:
     cmd: python src/gradient_detection_SAR_brilouet_etal_2023.py -i data/SAR/GRD_EE/SENTINEL-1_2020-02-13T00:00:00Z_2020-02-13T23:59:59Z_GRD_HD_DESCENDING_IW.nc -o data/figures/brilouet_etal_2023_fig2a
     deps:
     - src/gradient_detection_SAR_brilouet_etal_2023.py
     - data/SAR/GRD_EE/
     outs:
-    - data/figures/brilouet_etal_2023_fig2a
+    - data/figures/brilouet_etal_2023_fig2a:
+        remote: figures

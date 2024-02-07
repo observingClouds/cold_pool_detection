@@ -19,6 +19,7 @@ dependencies:
   - pre-commit
   - pyresample
   - xee
+  - dvc-gdrive
   - pip
   - pip:
     - asf_search
