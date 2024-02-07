@@ -73,5 +73,4 @@ ds = xr.open_dataset(merged_imgs, engine="ee", scale=0.001, geometry=geobounds)
 
 m = ds[["VV"]]
 res = m.where(m != 0, np.nan)
-# res.to_netcdf(args.output+'/'+'_'.join(opts.values())+".nc")
-res.to_netcdf(args.output + "/" + "test.nc")
+res.to_netcdf(args.output + "/" + "_".join(opts.values()) + ".nc")
