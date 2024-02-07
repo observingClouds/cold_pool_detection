@@ -122,16 +122,16 @@ if __name__ == "__main__":
 
     parser.add_argument("-i", "--input", type=str, help="SAR input file", required=True)
     parser.add_argument(
-        "--lat_start", type=float, help="Starting latitude for slice", required=True
+        "--lat_start", type=float, help="Starting latitude for slice", default=None
     )
     parser.add_argument(
-        "--lat_end", type=float, help="Ending latitude for slice", required=True
+        "--lat_end", type=float, help="Ending latitude for slice", default=None
     )
     parser.add_argument(
-        "--lon_start", type=float, help="Starting longitude for slice", required=True
+        "--lon_start", type=float, help="Starting longitude for slice", default=None
     )
     parser.add_argument(
-        "--lon_end", type=float, help="Ending longitude for slice", required=True
+        "--lon_end", type=float, help="Ending longitude for slice", default=None
     )
     parser.add_argument(
         "-o", "--output", type=str, help="Output folder for figures", required=True
@@ -145,9 +145,13 @@ if __name__ == "__main__":
     ds = xr.open_dataset(args.input)
 
     # SAR image similar to Fig. 3a) of Brilouet et al. (2023)
-    lat_slice = slice(args.lat_start, args.lat_end)
-    lon_slice = slice(args.lon_start, args.lon_end)
-    data = ds.VV.sel(lon=lon_slice, lat=lat_slice)
+
+    if args.lat_start is not None and args.lon_start is not None:
+        lat_slice = slice(args.lat_start, args.lat_end)
+        lon_slice = slice(args.lon_start, args.lon_end)
+        data = ds.VV.sel(lon=lon_slice, lat=lat_slice)
+    else:
+        data = ds.VV
 
     fig, ax = plt.subplots(1, 1)
     data.isel(time=0).plot(ax=ax, cmap="grey", vmin=-25, vmax=0, x="lon")
