@@ -76,8 +76,8 @@ stages:
       nfiles: 1
     - path: src/gradient_detection_SAR_brilouet_etal_2023.py
       hash: md5
-      md5: 452d3bb2a34a60cec684ef809261d834
-      size: 6212
+      md5: 7ee1e20dcd095c5e3c0d06dbc31181ff
+      size: 6324
     outs:
     - path: data/figures/brilouet_etal_2023_fig3
       hash: md5

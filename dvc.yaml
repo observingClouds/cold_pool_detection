@@ -10,7 +10,8 @@ stages:
     deps:
     - src/data/download_SAR.py
     outs:
-    - data/SAR/GRD/
+    - data/SAR/GRD/:
+        cache: false
   regrid_SAR:
     cmd: python src/data/regrid_SAR.py -v owiWindSpeed -i data/examples/SAR_WindSpeed_20200113.png
     deps:
