@@ -7,7 +7,13 @@ Tompkins, A. M. (2001). Organization of Tropical Convection in Low Vertical Wind
     1650–1672. https://doi.org/10.1175/1520-0469(2001)058<1650:OOTCIL>2.0.CO;2
 """
 
+import cartopy.crs as ccrs
+import datashader
+import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+import xarray as xr
+from datashader.mpl_ext import dsshow
 
 
 def buoyancy(theta_p, theta_p_mean=None, g=9.81):
@@ -54,45 +60,7 @@ def potential_temperature(T, p, p0=1000, k=0.2854):
     return theta
 
 
-def cold_pool_mask(T, p, qv, qc, qr, buoyancy_threshold=-0.005, theta_p_mean=None):
-    """Cold pool masking algorithm following Tompkins (2001)
-
-    Inputs
-    ------
-    T : float
-        Temperature
-    p : float
-        Pressure
-    qv : float
-        Water vapor mass mixing ratio
-    qc : float
-        Cloud condensate mass mixing ratio
-    qr : float
-        Rain water mass mixing ratio
-    buoyancy_threshold : float
-        Buoyancy threshold for cold pool detection. Default = -0.005 m**2/s
-    """
-    theta = potential_temperature(T, p)
-    theta_dp = theta_p(theta, qv, qc, qr)
-    b = buoyancy(theta_dp, theta_p_mean)
-    return b  # > buoyancy_threshold
-
-
-def area_avg(data):
-    return data.rolling(cell=10000, min_periods=1).mean()
-
-
-import cartopy.crs as ccrs
-import cartopy.feature as cf
-import datashader
-import matplotlib.patches as mpatches
-import matplotlib.pyplot as plt
-import pandas as pd
-from datashader.mpl_ext import dsshow
-from matplotlib import ticker as mticker
-
-
-def plot(da, grid, vmin=None, vmax=None, cmap="RdBu_r", dpi=100):
+def plot(da, grid, vmin=None, vmax=None, cmap="RdBu_r", dpi=100, fig=None):
     # Lazy loading of output and grid
 
     central_longitude = 0  # -53.54884554550185
@@ -109,28 +77,18 @@ def plot(da, grid, vmin=None, vmax=None, cmap="RdBu_r", dpi=100):
         np.rad2deg(grid.clat.values),
     )
 
-    fig, ax = plt.subplots(subplot_kw={"projection": projection}, dpi=dpi)
-    fig.canvas.draw_idle()
-    ax.add_feature(cf.COASTLINE, linewidth=0.8)
+    if fig is None:
+        fig, ax = plt.subplots(subplot_kw={"projection": projection}, dpi=dpi)
+        fig.canvas.draw_idle()
+        # ax.add_feature(cf.COASTLINE, linewidth=0.8)
+    else:
+        ax = fig.gca()
 
-    gl = ax.gridlines(projection, draw_labels=True, alpha=0.35)
-    gl.top_labels = False
-    gl.right_labels = False
-    gl.ylocator = mticker.FixedLocator(np.arange(11, 16, 1))
-    gl.xlocator = mticker.FixedLocator(np.arange(-180, 0, 1))
+    # gl = ax.gridlines(projection, draw_labels=True, alpha=0.35)
+    # gl.top_labels = False
+    # gl.right_labels = False
 
-    ax.add_patch(
-        mpatches.Circle(
-            xy=[-57.717, 13.3],
-            radius=1,
-            edgecolor="grey",
-            fill=False,
-            transform=ccrs.PlateCarree(),
-            zorder=30,
-        )
-    )
-
-    artist = dsshow(
+    _ = dsshow(
         pd.DataFrame({
             "val": da.values,
             "x": coords[:, 0],
@@ -144,7 +102,7 @@ def plot(da, grid, vmin=None, vmax=None, cmap="RdBu_r", dpi=100):
         ax=ax,
     )
 
-    fig.colorbar(artist, label=f"{da.units}", shrink=0.8)
+    # fig.colorbar(artist, label=f"{da.units}", shrink=0.8)
     return fig
 
 
@@ -157,5 +115,34 @@ if __name__ == "__main__":
     grid = cat.simulations.grids["6b59890b-99f3-939b-e76a-0a3ad2e43140"].to_dask()
     ds = cat.simulations.ICON.LES_CampaignDomain_control["3D_DOM01"].to_dask()
     data = ds.sel(time="2020-01-10 00:00:00").isel(height=67).load()
-    b = cold_pool_mask(data["temp"], data["pres"], data["qv"], data["qc"], data["qr"])
-    plot((b > -0.005).astype(int), grid)
+    # b = cold_pool_mask(data["temp"], data["pres"], data["qv"], data["qc"], data["qr"])
+    data["theta"] = potential_temperature(data["temp"], data["pres"])
+    theta_dp = theta_p(data["theta"], data["qv"], data["qc"], data["qr"])
+    # large_scale_mean = data['theta'].rolling(cell=100000, min_periods=1).mean()
+    # b = buoyancy(theta_dp, data['theta_coarse'])
+    # plot((b > -0.005).astype(int), grid)
+    #
+    data["theta_coarse"] = xr.DataArray(
+        data=np.zeros_like(data["theta"]),
+        coords=data["theta"].coords,
+        dims=data["theta"].dims,
+    )
+    theta_dp.attrs["units"] = "K"
+    data["theta_coarse"].attrs["units"] = "K"
+    b = buoyancy(theta_dp, data["theta_coarse"])
+    cold_pool_mask = (b > 0.05).astype(float)
+    cold_pool_mask.attrs["units"] = ""
+    cold_pool_mask[cold_pool_mask == 1] = np.nan
+
+    # Plotting
+    fig = plot(data["temp"], grid, vmin=290, vmax=300)
+    fig.savefig("temparature.png")
+    fig = plot(cold_pool_mask, grid, cmap="Greys_r", fig=fig)
+    fig.savefig("joint.png")
+
+    # Plotting cold pool mask only
+    fig = plot(cold_pool_mask, grid, cmap="Greys_r")
+    fig.savefig("cold_pool_mask.png")
+
+    # Plotting satellite data
+    # to be added
