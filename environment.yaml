@@ -4,6 +4,7 @@ channels:
 dependencies:
   - python
   - xarray
+  - intake<2.0.0
   - intake-xarray
   - zarr
   - dvc
@@ -25,3 +26,4 @@ dependencies:
   - pip
   - pip:
     - asf_search
+    - git+git@github.com:d70-t/preffs.git

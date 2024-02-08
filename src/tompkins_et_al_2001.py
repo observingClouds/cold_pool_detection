@@ -108,13 +108,22 @@ def plot(da, grid, vmin=None, vmax=None, cmap="RdBu_r", dpi=100, fig=None):
 
 if __name__ == "__main__":
     import intake
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--time", help="Specify the time in the format 'YYYY-MM-DD HH:MM:SS'")
+    parser.add_argument("--output", help="Specify output folder for the plots.")
+    args = parser.parse_args()
+
+    time = args.time
+    out_dir = args.output
 
     cat = intake.open_catalog(
         "https://raw.githubusercontent.com/eurec4a/eurec4a-intake/master/catalog.yml"
     )
     grid = cat.simulations.grids["6b59890b-99f3-939b-e76a-0a3ad2e43140"].to_dask()
     ds = cat.simulations.ICON.LES_CampaignDomain_control["3D_DOM01"].to_dask()
-    data = ds.sel(time="2020-01-10 00:00:00").isel(height=67).load()
+    data = ds.sel(time=time).isel(height=67).load()
     # b = cold_pool_mask(data["temp"], data["pres"], data["qv"], data["qc"], data["qr"])
     data["theta"] = potential_temperature(data["temp"], data["pres"])
     theta_dp = theta_p(data["theta"], data["qv"], data["qc"], data["qr"])
@@ -129,6 +138,10 @@ if __name__ == "__main__":
     )
     theta_dp.attrs["units"] = "K"
     data["theta_coarse"].attrs["units"] = "K"
+    pointer = 0
+    for b, block in enumerate(data['theta'].chunk(cell=100000).data.blocks):
+        data['theta_coarse'][pointer:pointer+len(block)]=np.mean(block)
+        pointer+=len(block)
     b = buoyancy(theta_dp, data["theta_coarse"])
     cold_pool_mask = (b > 0.05).astype(float)
     cold_pool_mask.attrs["units"] = ""
@@ -136,13 +149,21 @@ if __name__ == "__main__":
 
     # Plotting
     fig = plot(data["temp"], grid, vmin=290, vmax=300)
-    fig.savefig("temparature.png")
+    fig.savefig(f"{out_dir}/temparature_{time}.png")
     fig = plot(cold_pool_mask, grid, cmap="Greys_r", fig=fig)
-    fig.savefig("joint.png")
+    fig.savefig(f"{out_dir}/joint_{time}.png")
 
     # Plotting cold pool mask only
     fig = plot(cold_pool_mask, grid, cmap="Greys_r")
-    fig.savefig("cold_pool_mask.png")
+    fig.savefig(f"{out_dir}/cold_pool_mask_{time}.png")
 
     # Plotting satellite data
     # to be added
+
+    cat_local = intake.open_catalog("https://github.com/observingClouds/tape_archive_index/raw/main/catalog.yml")
+    sat_entry = cat_local['EUREC4A_ICON-LES_control_DOM01_RTTOV_native']
+    sat_entry.storage_options['preffs']['prefix'] = '/scratch/m/m300408/'
+    ds_sat = sat_entry.to_dask()
+    ds_sat_sel = ds_sat['synsat_rttov_forward_model_1__abi_ir__goes_16__channel_7'].sel(time=time)
+    fig = plot(ds_sat_sel, grid, vmin=270, vmax=300)
+    fig.savefig(f"{out_dir}/satellite_{time}.png")
