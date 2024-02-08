@@ -104,3 +104,16 @@ stages:
       md5: a311c9e0399b48b33f9c45566e987ca9.dir
       size: 138095
       nfiles: 3
+  classify_tompkins_2001_example:
+    cmd: python src/tompkins_et_al_2001.py --time "2020-01-10 00:00:00" --output data/examples/tompkins
+    deps:
+    - path: src/tompkins_et_al_2001.py
+      hash: md5
+      md5: 111ae7e02b6c597412f77754b499dd9a
+      size: 5515
+    outs:
+    - path: data/examples/tompkins
+      hash: md5
+      md5: ed2d96a9902078a4a114c052e58c9c54.dir
+      size: 777016
+      nfiles: 4
