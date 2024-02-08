@@ -20,6 +20,8 @@ dependencies:
   - pyresample
   - xee
   - dvc-gdrive
+  - datashader
+  - cartopy
   - pip
   - pip:
     - asf_search
