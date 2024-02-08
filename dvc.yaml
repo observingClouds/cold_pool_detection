@@ -49,3 +49,10 @@ stages:
     outs:
     - data/figures/brilouet_etal_2023_fig2a:
         remote: figures
+  classify_tompkins_2001_example:
+    cmd: python src/tompkins_et_al_2001.py --time "2020-01-10 00:00:00" --output data/examples/tompkins
+    deps:
+    - src/tompkins_et_al_2001.py
+    outs:
+    - data/examples/tompkins:
+        remote: figures
