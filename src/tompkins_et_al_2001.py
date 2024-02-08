@@ -157,13 +157,13 @@ if __name__ == "__main__":
         os.makedirs(out_dir)
 
     fig = plot(data["temp"], grid, vmin=290, vmax=300)
-    fig.savefig(f"{out_dir}/temparature_{time}.png")
+    fig.savefig(f"{out_dir}/temparature_{time}.png", bbox_inches="tight")
     fig = plot(cold_pool_mask, grid, cmap="Greys_r", fig=fig)
-    fig.savefig(f"{out_dir}/joint_{time}.png")
+    fig.savefig(f"{out_dir}/joint_{time}.png", bbox_inches="tight")
 
     # Plotting cold pool mask only
     fig = plot(cold_pool_mask, grid, cmap="Greys_r")
-    fig.savefig(f"{out_dir}/cold_pool_mask_{time}.png")
+    fig.savefig(f"{out_dir}/cold_pool_mask_{time}.png", bbox_inches="tight")
 
     # Plotting satellite data
     # to be added
@@ -178,4 +178,4 @@ if __name__ == "__main__":
         time=time
     )
     fig = plot(ds_sat_sel, grid, vmin=270, vmax=300)
-    fig.savefig(f"{out_dir}/satellite_{time}.png")
+    fig.savefig(f"{out_dir}/satellite_{time}.png", bbox_inches="tight")
