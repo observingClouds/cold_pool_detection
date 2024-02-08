@@ -111,6 +111,7 @@ def plot(da, grid, vmin=None, vmax=None, cmap="RdBu_r", dpi=100, fig=None):
 if __name__ == "__main__":
     import argparse
 
+    import dvc.api
     import intake
 
     parser = argparse.ArgumentParser()
@@ -122,6 +123,7 @@ if __name__ == "__main__":
 
     time = args.time
     out_dir = args.output
+    params = dvc.api.params_show()
 
     cat = intake.open_catalog(
         "https://raw.githubusercontent.com/eurec4a/eurec4a-intake/master/catalog.yml"
@@ -148,7 +150,7 @@ if __name__ == "__main__":
         data["theta_coarse"][pointer : pointer + len(block)] = np.mean(block)
         pointer += len(block)
     b = buoyancy(theta_dp, data["theta_coarse"])
-    cold_pool_mask = (b > 0.05).astype(float)
+    cold_pool_mask = (b > params["tompkins_2001"]["buoyancy_threshold"]).astype(float)
     cold_pool_mask.attrs["units"] = ""
     cold_pool_mask[cold_pool_mask == 1] = np.nan
 

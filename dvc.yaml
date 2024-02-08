@@ -56,3 +56,5 @@ stages:
     outs:
     - data/examples/tompkins:
         remote: figures
+    params:
+    - tompkins_2001.buoyancy_threshold
