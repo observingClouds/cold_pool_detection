@@ -7,6 +7,8 @@ Tompkins, A. M. (2001). Organization of Tropical Convection in Low Vertical Wind
     1650–1672. https://doi.org/10.1175/1520-0469(2001)058<1650:OOTCIL>2.0.CO;2
 """
 
+import os
+
 import cartopy.crs as ccrs
 import datashader
 import matplotlib.pyplot as plt
@@ -107,11 +109,14 @@ def plot(da, grid, vmin=None, vmax=None, cmap="RdBu_r", dpi=100, fig=None):
 
 
 if __name__ == "__main__":
-    import intake
     import argparse
 
+    import intake
+
     parser = argparse.ArgumentParser()
-    parser.add_argument("--time", help="Specify the time in the format 'YYYY-MM-DD HH:MM:SS'")
+    parser.add_argument(
+        "--time", help="Specify the time in the format 'YYYY-MM-DD HH:MM:SS'"
+    )
     parser.add_argument("--output", help="Specify output folder for the plots.")
     args = parser.parse_args()
 
@@ -139,15 +144,18 @@ if __name__ == "__main__":
     theta_dp.attrs["units"] = "K"
     data["theta_coarse"].attrs["units"] = "K"
     pointer = 0
-    for b, block in enumerate(data['theta'].chunk(cell=100000).data.blocks):
-        data['theta_coarse'][pointer:pointer+len(block)]=np.mean(block)
-        pointer+=len(block)
+    for block in data["theta"].chunk(cell=100000).data.blocks:
+        data["theta_coarse"][pointer : pointer + len(block)] = np.mean(block)
+        pointer += len(block)
     b = buoyancy(theta_dp, data["theta_coarse"])
     cold_pool_mask = (b > 0.05).astype(float)
     cold_pool_mask.attrs["units"] = ""
     cold_pool_mask[cold_pool_mask == 1] = np.nan
 
     # Plotting
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
     fig = plot(data["temp"], grid, vmin=290, vmax=300)
     fig.savefig(f"{out_dir}/temparature_{time}.png")
     fig = plot(cold_pool_mask, grid, cmap="Greys_r", fig=fig)
@@ -160,10 +168,14 @@ if __name__ == "__main__":
     # Plotting satellite data
     # to be added
 
-    cat_local = intake.open_catalog("https://github.com/observingClouds/tape_archive_index/raw/main/catalog.yml")
-    sat_entry = cat_local['EUREC4A_ICON-LES_control_DOM01_RTTOV_native']
-    sat_entry.storage_options['preffs']['prefix'] = '/scratch/m/m300408/'
+    cat_local = intake.open_catalog(
+        "https://github.com/observingClouds/tape_archive_index/raw/main/catalog.yml"
+    )
+    sat_entry = cat_local["EUREC4A_ICON-LES_control_DOM01_RTTOV_native"]
+    sat_entry.storage_options["preffs"]["prefix"] = "/scratch/m/m300408/"
     ds_sat = sat_entry.to_dask()
-    ds_sat_sel = ds_sat['synsat_rttov_forward_model_1__abi_ir__goes_16__channel_7'].sel(time=time)
+    ds_sat_sel = ds_sat["synsat_rttov_forward_model_1__abi_ir__goes_16__channel_7"].sel(
+        time=time
+    )
     fig = plot(ds_sat_sel, grid, vmin=270, vmax=300)
     fig.savefig(f"{out_dir}/satellite_{time}.png")
