@@ -230,7 +230,7 @@ class Classifier:
         self.out_dir = out_dir
         self.ds_3D, self.ds_sat, self.grid = load_datasets()
         self.times = list(
-            set(self.ds_3D.time.values).union(set(self.ds_sat.time.values))
+            set(self.ds_3D.time.values).intersection(set(self.ds_sat.time.values))
         )
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
