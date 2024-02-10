@@ -185,7 +185,7 @@ def plot_classification(cold_pool_mask, grid, time, out_dir=None):
     """Plot classification results."""
     fig = plot(cold_pool_mask, grid, cmap="Greys_r")
     if out_dir is not None:
-        fig.savefig(f"{out_dir}/cold_pool_mask_{time}.png", bbox_inches="tight")
+        fig.savefig(f"{out_dir}/{time}_cold_pool_mask.png", bbox_inches="tight")
     return fig
 
 
@@ -194,7 +194,7 @@ def plot_input(data, grid, time, out_dir=None):
     fig = plot(data["temp"], grid, vmin=290, vmax=300)
     fig = plot(data["temp"], grid, vmin=290, vmax=300)
     if out_dir is not None:
-        fig.savefig(f"{out_dir}/temparature_{time}.png", bbox_inches="tight")
+        fig.savefig(f"{out_dir}/{time}_temparature.png", bbox_inches="tight")
     return fig
 
 
@@ -203,7 +203,7 @@ def plot_validation(data, cold_pool_mask, grid, time, out_dir=None):
     fig = plot(data["temp"], grid, vmin=290, vmax=300)
     fig = plot(cold_pool_mask, grid, cmap="Greys_r", fig=fig)
     if out_dir is not None:
-        fig.savefig(f"{out_dir}/joint_{time}.png", bbox_inches="tight")
+        fig.savefig(f"{out_dir}/{time}_joint.png", bbox_inches="tight")
     return fig
 
 
@@ -217,7 +217,7 @@ def plot_NN_input(
     """Plot satellite data."""
     fig = plot(data[var], grid, vmin=270, vmax=300)
     if out_dir is not None:
-        fig.savefig(f"{out_dir}/satellite_{time}.png", bbox_inches="tight")
+        fig.savefig(f"{out_dir}/{time}_satellite.png", bbox_inches="tight")
     return fig
 
 
