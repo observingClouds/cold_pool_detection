@@ -243,6 +243,7 @@ class Classifier:
         plot_input(data, self.grid, time, self.out_dir)
         plot_validation(data, cold_pool_mask, self.grid, time, self.out_dir)
         plot_NN_input(data, self.grid, time, self.out_dir)
+        plt.close("all")
 
 
 if __name__ == "__main__":
