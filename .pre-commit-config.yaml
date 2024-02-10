@@ -6,6 +6,7 @@ repos:
     rev: v4.5.0
     hooks:
     -   id: trailing-whitespace
+        exclude: ^dvc.lock
     -   id: check-added-large-files
         args: ['--maxkb=2000']
     -   id: end-of-file-fixer
