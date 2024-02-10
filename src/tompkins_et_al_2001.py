@@ -11,6 +11,7 @@ import os
 
 import cartopy.crs as ccrs
 import datashader
+import intake
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -228,6 +229,9 @@ class Classifier:
         self.params = params if params is not None else {}
         self.out_dir = out_dir
         self.ds_3D, self.ds_sat, self.grid = load_datasets()
+        self.times = list(
+            set(self.ds_3D.time.values).union(set(self.ds_sat.time.values))
+        )
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
 
@@ -245,7 +249,6 @@ if __name__ == "__main__":
     import argparse
 
     import dvc.api
-    import intake
 
     parser = argparse.ArgumentParser()
     parser.add_argument(

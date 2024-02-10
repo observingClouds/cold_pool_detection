@@ -58,3 +58,13 @@ stages:
         remote: figures
     params:
     - tompkins_2001.buoyancy_threshold
+  generate_ground_truth_simulation:
+    cmd: python src/label/generate_ground_truth_simulation.py --output data/labels
+    deps:
+    - src/label/generate_ground_truth_simulation.py
+    params:
+    - ground_truth_simulation.method
+    - tompkins_2001.buoyancy_threshold
+    - tompkins_2001.avg_length
+    outs:
+    - data/labels
