@@ -21,7 +21,7 @@ if params["ground_truth_simulation"]["method"] == "tompkins_2001":
     classifier = Classifier(output_dir, params=params["tompkins_2001"])
     hgt = params["tompkins_2001"]["height"]
     times = classifier.times
-    for time in tqdm.tqdm(times[:4]):
+    for time in tqdm.tqdm(times):
         dt_time = time.astype("datetime64[s]").item()
         time_str = dt_time.strftime("%Y-%m-%d %H:%M:%S")
         classifier.classify(time_str, height=hgt)
