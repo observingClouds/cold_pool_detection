@@ -2,7 +2,7 @@ name: cpd
 channels:
   - conda-forge
 dependencies:
-  - python
+  - python<=3.11
   - xarray
   - intake<2.0.0
   - intake-xarray
@@ -23,7 +23,9 @@ dependencies:
   - dvc-gdrive
   - datashader
   - cartopy
+  - keras
   - pip
   - pip:
     - asf_search
     - git+git@github.com:d70-t/preffs.git
+    - tensorflow[and-cuda]
