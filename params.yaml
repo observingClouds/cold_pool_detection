@@ -1,2 +1,5 @@
 tompkins_2001:
   buoyancy_threshold: 0.05
+  avg_length: 100000
+ground_truth_simulation:
+  method: "tompkins_2001"

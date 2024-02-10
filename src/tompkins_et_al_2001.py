@@ -108,6 +108,139 @@ def plot(da, grid, vmin=None, vmax=None, cmap="RdBu_r", dpi=100, fig=None):
     return fig
 
 
+def large_scale_average(da, avg_length=100000):
+    """Calculating the large scale average of a DataArray."""
+    da_out = xr.DataArray(
+        data=np.zeros_like(da),
+        coords=da.coords,
+        dims=da.dims,
+    )
+    pointer = 0
+    for block in da.chunk(cell=avg_length).data.blocks:
+        da_out[pointer : pointer + len(block)] = np.mean(block)
+        pointer += len(block)
+    return da_out
+
+
+def load_datasets():
+    # 3D atmospheric variables
+    cat = intake.open_catalog(
+        "https://raw.githubusercontent.com/eurec4a/eurec4a-intake/master/catalog.yml"
+    )
+    hgrid = cat.simulations.grids["6b59890b-99f3-939b-e76a-0a3ad2e43140"].to_dask()
+    ds_3D = cat.simulations.ICON.LES_CampaignDomain_control["3D_DOM01"].to_dask()
+
+    # Synthetic satellite data
+    cat_local = intake.open_catalog(
+        "https://github.com/observingClouds/tape_archive_index/raw/main/catalog.yml"
+    )
+    sat_entry = cat_local["EUREC4A_ICON-LES_control_DOM01_RTTOV_native"]
+    sat_entry.storage_options["preffs"]["prefix"] = "/scratch/m/m300408/"
+    ds_sat = sat_entry.to_dask()
+    ds_sat = ds_sat["synsat_rttov_forward_model_1__abi_ir__goes_16__channel_7"]
+
+    return ds_3D, ds_sat, hgrid
+
+
+def load_frame(ds, ds_sat, time, height):
+    """Load individual time frame from the datasets.
+
+    Inputs
+    ------
+    ds : xarray.Dataset
+        3D atmospheric variables
+    ds_sat : xarray.Dataset
+        Synthetic satellite data
+    time : str
+        Time in the format 'YYYY-MM-DD HH:MM:SS'
+    height : int
+        Height index to load
+    """
+    data_3D = ds.sel(time=time, method="nearest").isel(height=height).load()
+    data_sat = ds_sat.sel(time=time, method="nearest").load()
+
+    assert data_3D.time == data_sat.time, "Time mismatch between 3D and satellite data."
+
+    return xr.merge([data_3D, data_sat])
+
+
+def get_cloud_pool_mask(data, avg_length=None, buoyancy_threshold=-0.005, **kwargs):
+    data["theta"] = potential_temperature(data["temp"], data["pres"])
+    theta_dp = theta_p(data["theta"], data["qv"], data["qc"], data["qr"])
+
+    if avg_length is not None:
+        ls_avg = large_scale_average(data["theta"], avg_length=avg_length)
+    else:
+        ls_avg = None
+
+    b = buoyancy(theta_dp, ls_avg)
+    cold_pool_mask = (b > buoyancy_threshold).astype(float)
+    cold_pool_mask.attrs["units"] = ""
+    cold_pool_mask[cold_pool_mask == 1] = np.nan
+    return cold_pool_mask
+
+
+def plot_classification(cold_pool_mask, grid, time, out_dir=None):
+    """Plot classification results."""
+    fig = plot(cold_pool_mask, grid, cmap="Greys_r")
+    if out_dir is not None:
+        fig.savefig(f"{out_dir}/cold_pool_mask_{time}.png", bbox_inches="tight")
+    return fig
+
+
+def plot_input(data, grid, time, out_dir=None):
+    """Plot input data."""
+    fig = plot(data["temp"], grid, vmin=290, vmax=300)
+    fig = plot(data["temp"], grid, vmin=290, vmax=300)
+    if out_dir is not None:
+        fig.savefig(f"{out_dir}/temparature_{time}.png", bbox_inches="tight")
+    return fig
+
+
+def plot_validation(data, cold_pool_mask, grid, time, out_dir=None):
+    """Plot overlay of classification and input data."""
+    fig = plot(data["temp"], grid, vmin=290, vmax=300)
+    fig = plot(cold_pool_mask, grid, cmap="Greys_r", fig=fig)
+    if out_dir is not None:
+        fig.savefig(f"{out_dir}/joint_{time}.png", bbox_inches="tight")
+    return fig
+
+
+def plot_NN_input(
+    data,
+    grid,
+    time,
+    out_dir,
+    var="synsat_rttov_forward_model_1__abi_ir__goes_16__channel_7",
+):
+    """Plot satellite data."""
+    fig = plot(data[var], grid, vmin=270, vmax=300)
+    if out_dir is not None:
+        fig.savefig(f"{out_dir}/satellite_{time}.png", bbox_inches="tight")
+    return fig
+
+
+class Classifier:
+    """Classification class."""
+
+    def __init__(self, out_dir, params=None):
+        """Initializing classifier by loading lazily available datasets."""
+        self.params = params if params is not None else {}
+        self.out_dir = out_dir
+        self.ds_3D, self.ds_sat, self.grid = load_datasets()
+        if not os.path.exists(out_dir):
+            os.makedirs(out_dir)
+
+    def classify(self, time, height):
+        """Classify cold pools at a given time and height."""
+        data = load_frame(self.ds_3D, self.ds_sat, time, height)
+        cold_pool_mask = get_cloud_pool_mask(data, **self.params)
+        plot_classification(cold_pool_mask, self.grid, time, self.out_dir)
+        plot_input(data, self.grid, time, self.out_dir)
+        plot_validation(data, cold_pool_mask, self.grid, time, self.out_dir)
+        plot_NN_input(data, self.grid, time, self.out_dir)
+
+
 if __name__ == "__main__":
     import argparse
 
@@ -125,59 +258,5 @@ if __name__ == "__main__":
     out_dir = args.output
     params = dvc.api.params_show()
 
-    cat = intake.open_catalog(
-        "https://raw.githubusercontent.com/eurec4a/eurec4a-intake/master/catalog.yml"
-    )
-    grid = cat.simulations.grids["6b59890b-99f3-939b-e76a-0a3ad2e43140"].to_dask()
-    ds = cat.simulations.ICON.LES_CampaignDomain_control["3D_DOM01"].to_dask()
-    data = ds.sel(time=time).isel(height=67).load()
-    # b = cold_pool_mask(data["temp"], data["pres"], data["qv"], data["qc"], data["qr"])
-    data["theta"] = potential_temperature(data["temp"], data["pres"])
-    theta_dp = theta_p(data["theta"], data["qv"], data["qc"], data["qr"])
-    # large_scale_mean = data['theta'].rolling(cell=100000, min_periods=1).mean()
-    # b = buoyancy(theta_dp, data['theta_coarse'])
-    # plot((b > -0.005).astype(int), grid)
-    #
-    data["theta_coarse"] = xr.DataArray(
-        data=np.zeros_like(data["theta"]),
-        coords=data["theta"].coords,
-        dims=data["theta"].dims,
-    )
-    theta_dp.attrs["units"] = "K"
-    data["theta_coarse"].attrs["units"] = "K"
-    pointer = 0
-    for block in data["theta"].chunk(cell=100000).data.blocks:
-        data["theta_coarse"][pointer : pointer + len(block)] = np.mean(block)
-        pointer += len(block)
-    b = buoyancy(theta_dp, data["theta_coarse"])
-    cold_pool_mask = (b > params["tompkins_2001"]["buoyancy_threshold"]).astype(float)
-    cold_pool_mask.attrs["units"] = ""
-    cold_pool_mask[cold_pool_mask == 1] = np.nan
-
-    # Plotting
-    if not os.path.exists(out_dir):
-        os.makedirs(out_dir)
-
-    fig = plot(data["temp"], grid, vmin=290, vmax=300)
-    fig.savefig(f"{out_dir}/temparature_{time}.png", bbox_inches="tight")
-    fig = plot(cold_pool_mask, grid, cmap="Greys_r", fig=fig)
-    fig.savefig(f"{out_dir}/joint_{time}.png", bbox_inches="tight")
-
-    # Plotting cold pool mask only
-    fig = plot(cold_pool_mask, grid, cmap="Greys_r")
-    fig.savefig(f"{out_dir}/cold_pool_mask_{time}.png", bbox_inches="tight")
-
-    # Plotting satellite data
-    # to be added
-
-    cat_local = intake.open_catalog(
-        "https://github.com/observingClouds/tape_archive_index/raw/main/catalog.yml"
-    )
-    sat_entry = cat_local["EUREC4A_ICON-LES_control_DOM01_RTTOV_native"]
-    sat_entry.storage_options["preffs"]["prefix"] = "/scratch/m/m300408/"
-    ds_sat = sat_entry.to_dask()
-    ds_sat_sel = ds_sat["synsat_rttov_forward_model_1__abi_ir__goes_16__channel_7"].sel(
-        time=time
-    )
-    fig = plot(ds_sat_sel, grid, vmin=270, vmax=300)
-    fig.savefig(f"{out_dir}/satellite_{time}.png", bbox_inches="tight")
+    classifier = Classifier(out_dir, params=params["tompkins_2001"])
+    classifier.classify(time, height=67)
