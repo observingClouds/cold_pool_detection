@@ -27,5 +27,5 @@ dependencies:
   - pip
   - pip:
     - asf_search
-    - git+git@github.com:d70-t/preffs.git
+    - preffs @ git+https://github.com/d70-t/preffs@main
     - tensorflow[and-cuda]
