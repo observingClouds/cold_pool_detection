@@ -122,8 +122,8 @@ stages:
     deps:
     - path: src/label/generate_ground_truth_simulation.py
       hash: md5
-      md5: 3362c6dd09e83785543e6381d10c83e0
-      size: 803
+      md5: a83b0fd100e7ed6851475c752bdfa594
+      size: 799
     params:
       params.yaml:
         ground_truth_simulation.method: tompkins_2001
@@ -132,6 +132,6 @@ stages:
     outs:
     - path: data/labels
       hash: md5
-      md5: c4bf6cb812440616263c9a6c94af1e81.dir
-      size: 2881389
-      nfiles: 16
+      md5: be67ac042fc588b811b62da10a5e168e.dir
+      size: 71562636
+      nfiles: 409
