@@ -45,8 +45,8 @@ class Builder(tfds.core.GeneratorBasedBuilder):
         masks = path.glob("labels/*cold_pool_mask.png")
         for filename in masks:
             filename.parts
-            label_fn = str(filename).replace("cold_pool_mask", "satellite")
+            input_fn = str(filename).replace("cold_pool_mask", "satellite")
             yield str(filename), {
-                "image": str(filename),
-                "segmentation_mask": label_fn,
+                "image": input_fn,
+                "segmentation_mask": str(filename),
             }
