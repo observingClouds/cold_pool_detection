@@ -2,6 +2,7 @@
 
 import os
 
+import numpy as np
 import tensorflow_datasets as tfds
 
 
@@ -32,7 +33,12 @@ class Builder(tfds.core.GeneratorBasedBuilder):
             "/Users/haukeschulz/Documents/GitHub/cold_pool_detection/data/labels.tar.gz"
         )
         return {
-            tfds.Split.TRAIN: self._generate_examples(path=data_dir),
+            tfds.Split.TRAIN: self._generate_examples(
+                path=data_dir, split=0.5, set="train"
+            ),
+            tfds.Split.TEST: self._generate_examples(
+                path=data_dir, split=0.5, set="test"
+            ),
         }
 
     def _open_file(self, path):
@@ -40,10 +46,19 @@ class Builder(tfds.core.GeneratorBasedBuilder):
             with open(path, "rb") as file_obj:
                 return file_obj
 
-    def _generate_examples(self, path):
+    def _generate_examples(self, path, split, set):
         """Yields examples."""
-        masks = path.glob("labels/*cold_pool_mask.png")
-        for filename in masks:
+        masks = np.array(list(path.glob("labels/*cold_pool_mask.png")))
+        np.random.seed(1)
+        nb_images = len(masks)
+        nb_images_set = int(np.floor(nb_images * split))
+        random_idx = np.arange(nb_images)
+        np.random.shuffle(random_idx)
+        if set == "train":
+            ind = sorted(random_idx[:nb_images_set])
+        elif set == "test":
+            ind = sorted(random_idx[nb_images_set:])
+        for filename in masks[ind]:
             filename.parts
             input_fn = str(filename).replace("cold_pool_mask", "satellite")
             yield str(filename), {
