@@ -18,7 +18,8 @@ class Builder(tfds.core.GeneratorBasedBuilder):
         return self.dataset_info_from_configs(
             features=tfds.features.FeaturesDict({
                 "image": tfds.features.Image(),
-                "label": tfds.features.LabeledImage(labels=["environment", "coldpool"]),
+                "label": tfds.features.ClassLabel(names=["environment", "coldpool"]),
+                "segmentation_mask": tfds.features.Image(),
             }),
             supervised_keys=("image", "label"),  # Set to `None` to disable
             homepage="https://github.com/observingClouds/cold_pool_detection",
@@ -44,7 +45,8 @@ class Builder(tfds.core.GeneratorBasedBuilder):
         for filename in masks:
             filename.parts
             label_fn = str(filename).replace("cold_pool_mask", "satellite")
-            yield filename, {
-                "image": filename,
-                "label": label_fn,
+            yield str(filename), {
+                "image": str(filename),
+                "label": "environment",
+                "segmentation_mask": label_fn,
             }
