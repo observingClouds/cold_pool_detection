@@ -9,6 +9,8 @@ import sys
 import dvc.api
 import tensorflow as tf
 import tensorflow_datasets as tfds
+from dvclive import Live
+from dvclive.keras import DVCLiveCallback
 from IPython.display import clear_output
 from tensorflow_examples.models.pix2pix import pix2pix
 
@@ -136,11 +138,15 @@ class DisplayCallback(tf.keras.callbacks.Callback):
         print("\nSample Prediction after epoch {}\n".format(epoch + 1))
 
 
-model_history = model.fit(
-    train_batches,
-    epochs=EPOCHS,
-    steps_per_epoch=STEPS_PER_EPOCH,
-    validation_steps=VALIDATION_STEPS,
-    validation_data=test_batches,
-    callbacks=[DisplayCallback()],
-)
+with Live("custom_dir") as live:
+    model_history = model.fit(
+        train_batches,
+        epochs=EPOCHS,
+        steps_per_epoch=STEPS_PER_EPOCH,
+        validation_steps=VALIDATION_STEPS,
+        validation_data=test_batches,  # should potentially be an validation set
+        callbacks=[DisplayCallback(), DVCLiveCallback(live=live)],
+    )
+    test_loss, test_acc = model.evaluate(test_batches)
+    live.log_metric("test_loss", test_loss, plot=False)
+    live.log_metric("test_acc", test_acc, plot=False)
