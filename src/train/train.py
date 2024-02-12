@@ -13,6 +13,7 @@ from dvclive import Live
 from dvclive.keras import DVCLiveCallback
 from IPython.display import clear_output
 from tensorflow_examples.models.pix2pix import pix2pix
+from tensorflow_graphics.nn.metric import intersection_over_union
 
 sys.path.append(".")
 import helpers as helpers  # noqa: E402
@@ -150,4 +151,7 @@ with Live("custom_dir") as live:
     test_loss, test_acc = model.evaluate(test_batches)
     live.log_metric("test_loss", test_loss, plot=False)
     live.log_metric("test_acc", test_acc, plot=False)
-    live.log_plot("prediction", helpers.show_predictions(model, sample_image, sample_mask))
+    live.log_metric("iou", intersection_over_union(test_batches, model), plot=True)
+    live.log_plot(
+        "prediction", helpers.show_predictions(model, sample_image, sample_mask)
+    )

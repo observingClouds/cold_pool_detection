@@ -26,8 +26,11 @@ dependencies:
   - cartopy
   - keras
   - dvclive
+  - openexr
+  - openexr-tensorflow
   - pip
   - pip:
     - asf_search
     - preffs @ git+https://github.com/d70-t/preffs@main
     - tensorflow[and-cuda]
+    - tensorflow-graphics
