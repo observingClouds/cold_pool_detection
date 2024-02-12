@@ -145,3 +145,14 @@ stages:
       md5: 4f22a9657065b7afcbfe459bbe9f663d.dir
       size: 71562665
       nfiles: 410
+  train_neural_network:
+    cmd: python src/train/train.py
+    params:
+      params.yaml:
+        neural_network:
+          dataset: sim_cp_tompkins:1.0.0
+          batch_size: 10
+          buffer_size: 1000
+          epochs: 20
+          val_subsplit: 5
+          output_classes: 2

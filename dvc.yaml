@@ -1,12 +1,14 @@
 stages:
   download_example_SAR:
-    cmd: python src/data/download_SAR.py --start "2020-01-13T00:00:00Z" --end "2020-01-13T23:59:59Z" --output data/SAR/OCN/
+    cmd: python src/data/download_SAR.py --start "2020-01-13T00:00:00Z" --end "2020-01-13T23:59:59Z"
+      --output data/SAR/OCN/
     deps:
     - src/data/download_SAR.py
     outs:
     - data/SAR/OCN
   download_SAR_GRD:
-    cmd: python src/data/download_SAR.py --start "2020-01-13T00:00:00Z" --end "2020-01-13T23:59:59Z" --product GRD_HD --output data/SAR/GRD/
+    cmd: python src/data/download_SAR.py --start "2020-01-13T00:00:00Z" --end "2020-01-13T23:59:59Z"
+      --product GRD_HD --output data/SAR/GRD/
     deps:
     - src/data/download_SAR.py
     outs:
@@ -20,21 +22,27 @@ stages:
     outs:
     - data/examples/SAR_WindSpeed_20200113.png
   regrid_GOES16_ABI:
-    cmd: python src/data/regrid_GOES.py -f data/GOES16/OR_ABI-L1b-RadF-M6C13_G16_s20200130940200_e20200130949519_c20200130950003.nc -c C13 -i data/examples/GOES16-ABI_BT_C13_20201130940.png
+    cmd: python src/data/regrid_GOES.py -f
+      data/GOES16/OR_ABI-L1b-RadF-M6C13_G16_s20200130940200_e20200130949519_c20200130950003.nc
+      -c C13 -i data/examples/GOES16-ABI_BT_C13_20201130940.png
     deps:
     - src/data/regrid_GOES.py
     - data/GOES16/OR_ABI-L1b-RadF-M6C13_G16_s20200130940200_e20200130949519_c20200130950003.nc
     outs:
     - data/examples/GOES16-ABI_BT_C13_20201130940.png
   download_SAR_GRD_Brilouet2023:
-    cmd: python src/data/download_SAR_EE.py --start "2020-02-13T00:00:00Z" --end "2020-02-13T23:59:59Z" --product GRD_HD --output data/SAR/GRD_EE/
+    cmd: python src/data/download_SAR_EE.py --start "2020-02-13T00:00:00Z" --end "2020-02-13T23:59:59Z"
+      --product GRD_HD --output data/SAR/GRD_EE/
     deps:
     - src/data/download_SAR_EE.py
     outs:
     - data/SAR/GRD_EE/:
         cache: false
   reproduce_Brilouet2023_fig3:
-    cmd: python src/gradient_detection_SAR_brilouet_etal_2023.py -i data/SAR/GRD_EE/SENTINEL-1_2020-02-13T00:00:00Z_2020-02-13T23:59:59Z_GRD_HD_DESCENDING_IW.nc -o data/figures/brilouet_etal_2023_fig3 --lat_start=10.1 --lat_end=9.7 --lon_start=-58 --lon_end=-57.3
+    cmd: python src/gradient_detection_SAR_brilouet_etal_2023.py -i
+      data/SAR/GRD_EE/SENTINEL-1_2020-02-13T00:00:00Z_2020-02-13T23:59:59Z_GRD_HD_DESCENDING_IW.nc
+      -o data/figures/brilouet_etal_2023_fig3 --lat_start=10.1 --lat_end=9.7 --lon_start=-58
+      --lon_end=-57.3
     deps:
     - src/gradient_detection_SAR_brilouet_etal_2023.py
     - data/SAR/GRD_EE/
@@ -42,7 +50,9 @@ stages:
     - data/figures/brilouet_etal_2023_fig3:
         remote: figures
   reproduce_Brilouet2023_fig2a:
-    cmd: python src/gradient_detection_SAR_brilouet_etal_2023.py -i data/SAR/GRD_EE/SENTINEL-1_2020-02-13T00:00:00Z_2020-02-13T23:59:59Z_GRD_HD_DESCENDING_IW.nc -o data/figures/brilouet_etal_2023_fig2a
+    cmd: python src/gradient_detection_SAR_brilouet_etal_2023.py -i
+      data/SAR/GRD_EE/SENTINEL-1_2020-02-13T00:00:00Z_2020-02-13T23:59:59Z_GRD_HD_DESCENDING_IW.nc
+      -o data/figures/brilouet_etal_2023_fig2a
     deps:
     - src/gradient_detection_SAR_brilouet_etal_2023.py
     - data/SAR/GRD_EE/
@@ -69,10 +79,17 @@ stages:
     outs:
     - data/labels
   generate_tfds:
-    cmd: cd data; tar -cvzf labels.tar.gz labels; cd sim_cp_tompkins; tfds build --overwrite --download_config '{"download_mode":"force_redownload"}' --noforce_checksums_validation --register_checksums
+    cmd: cd data; tar -cvzf labels.tar.gz labels; cd sim_cp_tompkins; tfds build --overwrite
+      --download_config '{"download_mode":"force_redownload"}' --noforce_checksums_validation
+      --register_checksums
     deps:
     - data/labels
   train_neural_network:
     cmd: python src/train/train.py
     params:
     - neural_network
+metrics:
+- custom_dir/metrics.json
+plots:
+- custom_dir/plots/metrics:
+    x: step
