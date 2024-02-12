@@ -153,6 +153,6 @@ stages:
           dataset: sim_cp_tompkins:1.0.0
           batch_size: 10
           buffer_size: 1000
-          epochs: 20
+          epochs: 5
           val_subsplit: 5
           output_classes: 2
