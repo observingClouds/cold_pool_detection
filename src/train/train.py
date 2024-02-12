@@ -30,7 +30,7 @@ def load_image(datapoint):
     return input_image, input_mask
 
 
-dataset, info = tfds.load("sim_cp_tompkins:1.*.*", with_info=True)
+dataset, info = tfds.load("sim_cp_tompkins:1.0.0", with_info=True)
 
 train_images = dataset["train"].map(load_image, num_parallel_calls=tf.data.AUTOTUNE)
 test_images = dataset["test"].map(load_image, num_parallel_calls=tf.data.AUTOTUNE)
@@ -63,9 +63,10 @@ class Augment(tf.keras.layers.Layer):
 
 
 TRAIN_LENGTH = info.splits["train"].num_examples
-BATCH_SIZE = 64
+BATCH_SIZE = 10
 BUFFER_SIZE = 1000
 STEPS_PER_EPOCH = TRAIN_LENGTH // BATCH_SIZE
+assert STEPS_PER_EPOCH > 0, "BATCH_SIZE might be too large. STEPS_PER_EPOCH==0"
 train_images = dataset["train"].map(load_image, num_parallel_calls=tf.data.AUTOTUNE)
 test_images = dataset["test"].map(load_image, num_parallel_calls=tf.data.AUTOTUNE)
 train_batches = (
@@ -170,7 +171,6 @@ class DisplayCallback(tf.keras.callbacks.Callback):
         print("\nSample Prediction after epoch {}\n".format(epoch + 1))
 
 
-STEPS_PER_EPOCH = 1
 EPOCHS = 20
 VAL_SUBSPLITS = 5
 VALIDATION_STEPS = info.splits["test"].num_examples // BATCH_SIZE // VAL_SUBSPLITS
