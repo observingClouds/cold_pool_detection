@@ -142,9 +142,14 @@ stages:
     deps:
     - path: data/labels
       hash: md5
-      md5: 4f22a9657065b7afcbfe459bbe9f663d.dir
-      size: 71562665
-      nfiles: 410
+      md5: be67ac042fc588b811b62da10a5e168e.dir
+      size: 71562636
+      nfiles: 409
+    outs:
+    - path: data/labels.tar.gz
+      hash: md5
+      md5: 3a03b77e9892b163922a320ca0fc02a8
+      size: 71479234
   train_neural_network:
     cmd: python src/train/train.py
     params:
