@@ -139,7 +139,7 @@ class DisplayCallback(tf.keras.callbacks.Callback):
         print("\nSample Prediction after epoch {}\n".format(epoch + 1))
 
 
-with Live("custom_dir") as live:
+with Live("train/training_nn") as live:
     model_history = model.fit(
         train_batches,
         epochs=EPOCHS,
