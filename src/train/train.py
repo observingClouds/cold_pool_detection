@@ -150,3 +150,4 @@ with Live("custom_dir") as live:
     test_loss, test_acc = model.evaluate(test_batches)
     live.log_metric("test_loss", test_loss, plot=False)
     live.log_metric("test_acc", test_acc, plot=False)
+    live.log_plot("prediction", helpers.show_predictions(model, sample_image, sample_mask))
