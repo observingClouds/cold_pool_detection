@@ -4,49 +4,20 @@ Based on
 https://www.tensorflow.org/tutorials/images/segmentation
 """
 
-import matplotlib.pyplot as plt
+import helpers as helpers
 import tensorflow as tf
 import tensorflow_datasets as tfds
 from IPython.display import clear_output
 from tensorflow_examples.models.pix2pix import pix2pix
 
-
-def normalize(input_image, input_mask):
-    input_image = tf.cast(input_image, tf.float32) / 255.0
-    input_mask = tf.cast(input_mask, tf.float32) / 255.0
-    return input_image, input_mask
-
-
-def load_image(datapoint):
-    input_image = tf.image.resize(datapoint["image"], (128, 128))
-    input_mask = tf.image.resize(
-        datapoint["segmentation_mask"],
-        (128, 128),
-        method=tf.image.ResizeMethod.NEAREST_NEIGHBOR,
-    )
-
-    input_image, input_mask = normalize(input_image, input_mask)
-
-    return input_image, input_mask
-
-
 dataset, info = tfds.load("sim_cp_tompkins:1.0.0", with_info=True)
 
-train_images = dataset["train"].map(load_image, num_parallel_calls=tf.data.AUTOTUNE)
-test_images = dataset["test"].map(load_image, num_parallel_calls=tf.data.AUTOTUNE)
-
-
-def display(display_list):
-    plt.figure(figsize=(15, 15))
-
-    title = ["Input Image", "True Mask", "Predicted Mask"]
-
-    for i in range(len(display_list)):
-        plt.subplot(1, len(display_list), i + 1)
-        plt.title(title[i])
-        plt.imshow(tf.keras.utils.array_to_img(display_list[i]))
-        plt.axis("off")
-    plt.show()
+train_images = dataset["train"].map(
+    helpers.load_image, num_parallel_calls=tf.data.AUTOTUNE
+)
+test_images = dataset["test"].map(
+    helpers.load_image, num_parallel_calls=tf.data.AUTOTUNE
+)  # Fix the function call
 
 
 class Augment(tf.keras.layers.Layer):
@@ -66,9 +37,13 @@ TRAIN_LENGTH = info.splits["train"].num_examples
 BATCH_SIZE = 10
 BUFFER_SIZE = 1000
 STEPS_PER_EPOCH = TRAIN_LENGTH // BATCH_SIZE
+EPOCHS = 20
+VAL_SUBSPLITS = 5
+VALIDATION_STEPS = info.splits["test"].num_examples // BATCH_SIZE // VAL_SUBSPLITS
+OUTPUT_CLASSES = 2
+
 assert STEPS_PER_EPOCH > 0, "BATCH_SIZE might be too large. STEPS_PER_EPOCH==0"
-train_images = dataset["train"].map(load_image, num_parallel_calls=tf.data.AUTOTUNE)
-test_images = dataset["test"].map(load_image, num_parallel_calls=tf.data.AUTOTUNE)
+
 train_batches = (
     train_images.cache()
     .shuffle(BUFFER_SIZE)
@@ -79,9 +54,12 @@ train_batches = (
 )
 
 test_batches = test_images.batch(BATCH_SIZE)
+
+
 for images, masks in train_batches.take(2):
     sample_image, sample_mask = images[0], masks[0]
-    display([sample_image, sample_mask])
+    helpers.display([sample_image, sample_mask])
+
 base_model = tf.keras.applications.MobileNetV2(
     input_shape=[128, 128, 3], include_top=False
 )
@@ -132,8 +110,6 @@ def unet_model(output_channels: int):
     return tf.keras.Model(inputs=inputs, outputs=x)
 
 
-OUTPUT_CLASSES = 2
-
 model = unet_model(output_channels=OUTPUT_CLASSES)
 model.compile(
     optimizer="adam",
@@ -142,38 +118,15 @@ model.compile(
 )
 
 
-def create_mask(pred_mask):
-    pred_mask = tf.math.argmax(pred_mask, axis=-1)
-    pred_mask = pred_mask[..., tf.newaxis]
-    return pred_mask[0]
-
-
-def show_predictions(dataset=None, num=1):
-    if dataset:
-        for image, mask in dataset.take(num):
-            pred_mask = model.predict(image)
-            display([image[0], mask[0], create_mask(pred_mask)])
-    else:
-        display([
-            sample_image,
-            sample_mask,
-            create_mask(model.predict(sample_image[tf.newaxis, ...])),
-        ])
-
-
-show_predictions()
+helpers.show_predictions(model, sample_image, sample_mask)
 
 
 class DisplayCallback(tf.keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs=None):
         clear_output(wait=True)
-        show_predictions()
+        helpers.show_predictions(model, sample_image, sample_mask)
         print("\nSample Prediction after epoch {}\n".format(epoch + 1))
 
-
-EPOCHS = 20
-VAL_SUBSPLITS = 5
-VALIDATION_STEPS = info.splits["test"].num_examples // BATCH_SIZE // VAL_SUBSPLITS
 
 model_history = model.fit(
     train_batches,
