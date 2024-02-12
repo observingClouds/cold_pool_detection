@@ -4,13 +4,20 @@ Based on
 https://www.tensorflow.org/tutorials/images/segmentation
 """
 
-import helpers as helpers
+import sys
+
+import dvc.api
 import tensorflow as tf
 import tensorflow_datasets as tfds
 from IPython.display import clear_output
 from tensorflow_examples.models.pix2pix import pix2pix
 
-dataset, info = tfds.load("sim_cp_tompkins:1.0.0", with_info=True)
+sys.path.append(".")
+import helpers as helpers  # noqa: E402
+
+params = dvc.api.params_show()
+
+dataset, info = tfds.load(params["neural_network"]["dataset"], with_info=True)
 
 train_images = dataset["train"].map(
     helpers.load_image, num_parallel_calls=tf.data.AUTOTUNE
@@ -18,6 +25,18 @@ train_images = dataset["train"].map(
 test_images = dataset["test"].map(
     helpers.load_image, num_parallel_calls=tf.data.AUTOTUNE
 )  # Fix the function call
+
+BATCH_SIZE = params["neural_network"]["batch_size"]
+BUFFER_SIZE = params["neural_network"]["buffer_size"]
+EPOCHS = params["neural_network"]["epochs"]
+VAL_SUBSPLITS = params["neural_network"]["val_subsplit"]
+OUTPUT_CLASSES = params["neural_network"]["output_classes"]
+
+TRAIN_LENGTH = info.splits["train"].num_examples
+STEPS_PER_EPOCH = TRAIN_LENGTH // BATCH_SIZE
+VALIDATION_STEPS = info.splits["test"].num_examples // BATCH_SIZE // VAL_SUBSPLITS
+
+assert STEPS_PER_EPOCH > 0, "BATCH_SIZE might be too large. STEPS_PER_EPOCH==0"
 
 
 class Augment(tf.keras.layers.Layer):
@@ -32,17 +51,6 @@ class Augment(tf.keras.layers.Layer):
         labels = self.augment_labels(labels)
         return inputs, labels
 
-
-TRAIN_LENGTH = info.splits["train"].num_examples
-BATCH_SIZE = 10
-BUFFER_SIZE = 1000
-STEPS_PER_EPOCH = TRAIN_LENGTH // BATCH_SIZE
-EPOCHS = 20
-VAL_SUBSPLITS = 5
-VALIDATION_STEPS = info.splits["test"].num_examples // BATCH_SIZE // VAL_SUBSPLITS
-OUTPUT_CLASSES = 2
-
-assert STEPS_PER_EPOCH > 0, "BATCH_SIZE might be too large. STEPS_PER_EPOCH==0"
 
 train_batches = (
     train_images.cache()
