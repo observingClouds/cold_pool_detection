@@ -88,8 +88,10 @@ stages:
     cmd: python src/train/train.py
     params:
     - neural_network
+    plots:
+    - eval/training_nn/plots/predictions.png
 metrics:
-- custom_dir/metrics.json
+- eval/training_nn/metrics.json
 plots:
-- custom_dir/plots/metrics:
+- eval/training_nn/plots/metrics:
     x: step

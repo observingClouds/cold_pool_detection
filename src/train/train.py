@@ -13,7 +13,6 @@ from dvclive import Live
 from dvclive.keras import DVCLiveCallback
 from IPython.display import clear_output
 from tensorflow_examples.models.pix2pix import pix2pix
-from tensorflow_graphics.nn.metric import intersection_over_union
 
 sys.path.append(".")
 import helpers as helpers  # noqa: E402
@@ -129,9 +128,6 @@ model.compile(
 )
 
 
-helpers.show_predictions(model, sample_image, sample_mask)
-
-
 class DisplayCallback(tf.keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs=None):
         clear_output(wait=True)
@@ -139,19 +135,18 @@ class DisplayCallback(tf.keras.callbacks.Callback):
         print("\nSample Prediction after epoch {}\n".format(epoch + 1))
 
 
-with Live("train/training_nn") as live:
+with Live("eval/training_nn") as live:
     model_history = model.fit(
         train_batches,
         epochs=EPOCHS,
         steps_per_epoch=STEPS_PER_EPOCH,
         validation_steps=VALIDATION_STEPS,
         validation_data=test_batches,  # should potentially be an validation set
-        callbacks=[DisplayCallback(), DVCLiveCallback(live=live)],
+        callbacks=[DVCLiveCallback(live=live)],
     )
     test_loss, test_acc = model.evaluate(test_batches)
     live.log_metric("test_loss", test_loss, plot=False)
     live.log_metric("test_acc", test_acc, plot=False)
-    live.log_metric("iou", intersection_over_union(test_batches, model), plot=True)
-    live.log_plot(
-        "prediction", helpers.show_predictions(model, sample_image, sample_mask)
+    helpers.show_predictions(
+        model, sample_image, sample_mask, out="eval/training_nn/plots/predictions.png"
     )
