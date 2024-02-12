@@ -89,7 +89,7 @@ stages:
     params:
     - neural_network
     plots:
-    - eval/training_nn/plots/predictions.png
+    - eval/training_nn/plots/predictions/
 metrics:
 - eval/training_nn/metrics.json
 plots:

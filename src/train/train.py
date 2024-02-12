@@ -4,6 +4,7 @@ Based on
 https://www.tensorflow.org/tutorials/images/segmentation
 """
 
+import os
 import sys
 
 import dvc.api
@@ -18,6 +19,7 @@ sys.path.append(".")
 import helpers as helpers  # noqa: E402
 
 params = dvc.api.params_show()
+plot_dir = "eval/training_nn/plots/predictions/"
 
 dataset, info = tfds.load(params["neural_network"]["dataset"], with_info=True)
 
@@ -39,6 +41,9 @@ STEPS_PER_EPOCH = TRAIN_LENGTH // BATCH_SIZE
 VALIDATION_STEPS = info.splits["test"].num_examples // BATCH_SIZE // VAL_SUBSPLITS
 
 assert STEPS_PER_EPOCH > 0, "BATCH_SIZE might be too large. STEPS_PER_EPOCH==0"
+
+if not os.path.exists(plot_dir):
+    os.makedirs(plot_dir)
 
 
 class Augment(tf.keras.layers.Layer):
@@ -128,11 +133,15 @@ model.compile(
 )
 
 
-class DisplayCallback(tf.keras.callbacks.Callback):
+class PredictionsCallback(tf.keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs=None):
         clear_output(wait=True)
-        helpers.show_predictions(model, sample_image, sample_mask)
-        print("\nSample Prediction after epoch {}\n".format(epoch + 1))
+        helpers.show_predictions(
+            model,
+            sample_image,
+            sample_mask,
+            out=f"{plot_dir}/predictions{epoch:04g}.png",
+        )
 
 
 with Live("eval/training_nn") as live:
@@ -142,11 +151,8 @@ with Live("eval/training_nn") as live:
         steps_per_epoch=STEPS_PER_EPOCH,
         validation_steps=VALIDATION_STEPS,
         validation_data=test_batches,  # should potentially be an validation set
-        callbacks=[DVCLiveCallback(live=live)],
+        callbacks=[PredictionsCallback(), DVCLiveCallback(live=live)],
     )
     test_loss, test_acc = model.evaluate(test_batches)
     live.log_metric("test_loss", test_loss, plot=False)
     live.log_metric("test_acc", test_acc, plot=False)
-    helpers.show_predictions(
-        model, sample_image, sample_mask, out="eval/training_nn/plots/predictions.png"
-    )
