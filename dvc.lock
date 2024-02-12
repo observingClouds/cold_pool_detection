@@ -162,8 +162,17 @@ stages:
           val_subsplit: 5
           output_classes: 2
     outs:
+    - path: eval/training_nn/metrics.json
+      hash: md5
+      md5: bccb0b51ece5feaf3d7ea930d7e916b6
+      size: 285
+    - path: eval/training_nn/plots/metrics
+      hash: md5
+      md5: a3a863f70475c35fac30d3730de29854.dir
+      size: 467
+      nfiles: 4
     - path: eval/training_nn/plots/predictions/
       hash: md5
-      md5: 0e0c5d89fe004aaca7c6da4f0d00adc9.dir
-      size: 1343256
+      md5: 45792feca1356c052db586fcd7ac00f7.dir
+      size: 1905106
       nfiles: 5

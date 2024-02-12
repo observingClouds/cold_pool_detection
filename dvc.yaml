@@ -92,7 +92,8 @@ stages:
     - neural_network
     plots:
     - eval/training_nn/plots/predictions/
-    - eval/training_nn/plots/metrics:
-        x: step
-    metrics:
-    - eval/training_nn/metrics.json
+metrics:
+- eval/training_nn/metrics.json
+plots:
+- eval/training_nn/plots/metrics:
+    x: step
