@@ -61,6 +61,8 @@ class Builder(tfds.core.GeneratorBasedBuilder):
         for filename in masks[ind]:
             filename.parts
             input_fn = str(filename).replace("cold_pool_mask", "satellite")
+            if not os.path.exists(input_fn):
+                continue
             yield str(filename), {
                 "image": input_fn,
                 "segmentation_mask": str(filename),
