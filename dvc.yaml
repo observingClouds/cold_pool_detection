@@ -84,6 +84,8 @@ stages:
       --register_checksums
     deps:
     - data/labels
+    outs:
+    - data/labels.tar.gz
   train_neural_network:
     cmd: python src/train/train.py
     params:

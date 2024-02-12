@@ -156,3 +156,9 @@ stages:
           epochs: 5
           val_subsplit: 5
           output_classes: 2
+    outs:
+    - path: eval/training_nn/plots/predictions/
+      hash: md5
+      md5: 0e0c5d89fe004aaca7c6da4f0d00adc9.dir
+      size: 1343256
+      nfiles: 5
