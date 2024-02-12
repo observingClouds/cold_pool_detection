@@ -16,6 +16,7 @@ dependencies:
   - dvc-s3
   - matplotlib
   - satpy
+  - remotezip
   - ipdb
   - pre-commit
   - pyresample
