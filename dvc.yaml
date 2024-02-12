@@ -68,3 +68,7 @@ stages:
     - tompkins_2001.avg_length
     outs:
     - data/labels
+  generate_tfds:
+    cmd: cd data; tar -cvzf labels.tar.gz labels; cd sim_cp_tompkins; tfds build --overwrite --download_config '{"download_mode":"force_redownload"}' --noforce_checksums_validation --register_checksums
+    deps:
+    - data/labels
