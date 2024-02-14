@@ -78,6 +78,17 @@ for images, masks in train_batches.take(2):
 base_model = tf.keras.applications.MobileNetV2(
     input_shape=[128, 128, 3], include_top=False
 )
+base_model = tf.keras.applications.DenseNet121(
+    include_top=False,
+    weights=None,
+    input_shape=(120, 120, 3),
+    pooling="avg",
+)
+
+# Load checkpoints from https://github.com/Orion-AI-Lab/EfficientBigEarthNet/tree/main
+# wget "https://www.dropbox.com/s/idenhh7g4j3vapb/checkpoint_densenet121.zip?dl=1"
+checkpoint = tf.train.Checkpoint(base_model)
+checkpoint.restore("models/checkpoints/checkpoint_DenseNet121/checkpoints-4.index")
 
 # Use the activations of these layers
 layer_names = [
@@ -87,6 +98,8 @@ layer_names = [
     "block_13_expand_relu",  # 8x8
     "block_16_project",  # 4x4
 ]
+
+layer_names = [layer.name for layer in base_model.layers]
 base_model_outputs = [base_model.get_layer(name).output for name in layer_names]
 
 # Create the feature extraction model
