@@ -93,7 +93,7 @@ layer_names = [
     "conv2_block6_concat",  # 30x30 256
     "conv3_block12_concat",  # 15x15 512
     "conv4_block24_concat",  # 7x7 1024
-    # "conv5_block16_concat",  # 3x3 1024
+    "conv5_block16_concat",  # 3x3 1024
 ]
 
 # layer_names = [layer.name for layer in base_model.layers]
@@ -104,7 +104,7 @@ down_stack = tf.keras.Model(inputs=base_model.input, outputs=base_model_outputs)
 
 down_stack.trainable = False
 up_stack = [
-    # pix2pix.upsample(1024, 3),  # 3x3 -> 7x7
+    pix2pix.upsample(1024, 3),  # 3x3 -> 7x7
     pix2pix.upsample(512, 3),  # 7x7 -> 15x15
     pix2pix.upsample(256, 3),  # 15x15 -> 30x30
     pix2pix.upsample(128, 3),  # 30x30 -> 64x64
