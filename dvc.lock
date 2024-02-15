@@ -158,21 +158,12 @@ stages:
           dataset: sim_cp_tompkins:1.0.0
           batch_size: 10
           buffer_size: 1000
-          epochs: 5
+          epochs: 20
           val_subsplit: 5
           output_classes: 2
     outs:
-    - path: eval/training_nn/metrics.json
-      hash: md5
-      md5: bccb0b51ece5feaf3d7ea930d7e916b6
-      size: 285
-    - path: eval/training_nn/plots/metrics
-      hash: md5
-      md5: a3a863f70475c35fac30d3730de29854.dir
-      size: 467
-      nfiles: 4
     - path: eval/training_nn/plots/predictions/
       hash: md5
-      md5: 45792feca1356c052db586fcd7ac00f7.dir
-      size: 1905106
-      nfiles: 5
+      md5: 794d959f70ea4b097828e9058a523bef.dir
+      size: 5169512
+      nfiles: 20

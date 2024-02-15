@@ -3,11 +3,11 @@ tompkins_2001:
   avg_length: 100000
   height: 67
 ground_truth_simulation:
-  method: "tompkins_2001"
+  method: tompkins_2001
 neural_network:
   dataset: sim_cp_tompkins:1.0.0
   batch_size: 10
   buffer_size: 1000
-  epochs: 5
+  epochs: 20
   val_subsplit: 5
   output_classes: 2
