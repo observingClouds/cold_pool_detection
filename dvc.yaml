@@ -83,6 +83,7 @@ stages:
     - data/labels
     outs:
     - data/labels.tar.gz
+    - data/sim_cp_tompkins/checksums.tsv
   train_neural_network:
     cmd: python src/train/train.py
     params:
