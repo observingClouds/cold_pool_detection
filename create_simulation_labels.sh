@@ -7,7 +7,7 @@
 #SBATCH --time=7:00:00
 
 # Load environment
-source activate /work/mh0010/m300408/envs/cpd  # noqa: SC1091
+source activate /work/mh0010/m300408/envs/cpd
 
 # Change to the working directory
 cd /work/mh0010/m300408/cold_pool_detection || exit
