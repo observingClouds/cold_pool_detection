@@ -35,3 +35,4 @@ dependencies:
     - tensorflow[and-cuda]
     - tensorflow-graphics
     - tensorflow-datasets
+    - tensorflow-examples @ git+https://github.com/tensorflow/examples.git@master
