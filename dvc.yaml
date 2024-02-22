@@ -47,8 +47,7 @@ stages:
     - src/gradient_detection_SAR_brilouet_etal_2023.py
     - data/SAR/GRD_EE/
     outs:
-    - data/figures/brilouet_etal_2023_fig3:
-        remote: figures
+    - data/figures/brilouet_etal_2023_fig3
   reproduce_Brilouet2023_fig2a:
     cmd: python src/gradient_detection_SAR_brilouet_etal_2023.py -i
       data/SAR/GRD_EE/SENTINEL-1_2020-02-13T00:00:00Z_2020-02-13T23:59:59Z_GRD_HD_DESCENDING_IW.nc
@@ -57,15 +56,13 @@ stages:
     - src/gradient_detection_SAR_brilouet_etal_2023.py
     - data/SAR/GRD_EE/
     outs:
-    - data/figures/brilouet_etal_2023_fig2a:
-        remote: figures
+    - data/figures/brilouet_etal_2023_fig2a
   classify_tompkins_2001_example:
     cmd: python src/tompkins_et_al_2001.py --time "2020-01-10 00:00:00" --output data/examples/tompkins
     deps:
     - src/tompkins_et_al_2001.py
     outs:
-    - data/examples/tompkins:
-        remote: figures
+    - data/examples/tompkins
     params:
     - tompkins_2001.buoyancy_threshold
   generate_ground_truth_simulation:
