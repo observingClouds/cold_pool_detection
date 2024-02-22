@@ -136,7 +136,7 @@ def load_datasets():
         "https://github.com/observingClouds/tape_archive_index/raw/main/catalog.yml"
     )
     sat_entry = cat_local["EUREC4A_ICON-LES_control_DOM01_RTTOV_native"]
-    sat_entry.storage_options["preffs"]["prefix"] = "/scratch/m/m300408/"
+    sat_entry.storage_options["preffs"]["prefix"] = "/scratch/m/m300408/RTTOV/"
     ds_sat = sat_entry.to_dask()
     ds_sat = ds_sat["synsat_rttov_forward_model_1__abi_ir__goes_16__channel_7"]
 
