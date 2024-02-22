@@ -183,7 +183,7 @@ def get_cloud_pool_mask(data, avg_length=None, buoyancy_threshold=-0.005, **kwar
 
 def plot_classification(cold_pool_mask, grid, time, out_dir=None):
     """Plot classification results."""
-    fig = plot(cold_pool_mask, grid, cmap="Greys_r")
+    fig = plot(cold_pool_mask, grid, cmap="Greys_r", dpi=350)
     if out_dir is not None:
         fig.savefig(f"{out_dir}/{time}_cold_pool_mask.png", bbox_inches="tight")
     return fig
@@ -191,8 +191,8 @@ def plot_classification(cold_pool_mask, grid, time, out_dir=None):
 
 def plot_input(data, grid, time, out_dir=None):
     """Plot input data."""
-    fig = plot(data["temp"], grid, vmin=290, vmax=300)
-    fig = plot(data["temp"], grid, vmin=290, vmax=300)
+    fig = plot(data["temp"], grid, vmin=290, vmax=300, dpi=350)
+    fig = plot(data["temp"], grid, vmin=290, vmax=300, dpi=350)
     if out_dir is not None:
         fig.savefig(f"{out_dir}/{time}_temparature.png", bbox_inches="tight")
     return fig
@@ -200,7 +200,7 @@ def plot_input(data, grid, time, out_dir=None):
 
 def plot_validation(data, cold_pool_mask, grid, time, out_dir=None):
     """Plot overlay of classification and input data."""
-    fig = plot(data["temp"], grid, vmin=290, vmax=300)
+    fig = plot(data["temp"], grid, vmin=290, vmax=300, dpi=350)
     fig = plot(cold_pool_mask, grid, cmap="Greys_r", fig=fig)
     if out_dir is not None:
         fig.savefig(f"{out_dir}/{time}_joint.png", bbox_inches="tight")
@@ -215,7 +215,7 @@ def plot_NN_input(
     var="synsat_rttov_forward_model_1__abi_ir__goes_16__channel_7",
 ):
     """Plot satellite data."""
-    fig = plot(data[var], grid, vmin=270, vmax=300)
+    fig = plot(data[var], grid, vmin=270, vmax=300, dpi=350)
     if out_dir is not None:
         fig.savefig(f"{out_dir}/{time}_satellite.png", bbox_inches="tight")
     return fig
