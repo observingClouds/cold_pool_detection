@@ -24,6 +24,7 @@ def load_image(datapoint):
         padding="VALID",
     )
     image_patches = tf.reshape(image_patches, [-1, 128, 128, 3])
+    print(f"{image_patches.shape[0]} patches per image extracted")
     input_mask = tf.image.crop_to_bounding_box(
         datapoint["segmentation_mask"],
         offset_height=44,
