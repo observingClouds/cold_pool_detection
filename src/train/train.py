@@ -40,7 +40,7 @@ EPOCHS = params["neural_network"]["epochs"]
 VAL_SUBSPLITS = params["neural_network"]["val_subsplit"]
 OUTPUT_CLASSES = params["neural_network"]["output_classes"]
 
-TRAIN_LENGTH = info.splits["train"].num_examples
+TRAIN_LENGTH = len(test_images)
 STEPS_PER_EPOCH = TRAIN_LENGTH // BATCH_SIZE
 VALIDATION_STEPS = info.splits["test"].num_examples // BATCH_SIZE // VAL_SUBSPLITS
 
