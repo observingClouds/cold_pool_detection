@@ -16,7 +16,14 @@ def load_image(datapoint):
         target_width=1633,
         target_height=1011,
     )
-    input_image = tf.image.resize(input_image, (128, 128))
+    image_patches = tf.image.extract_patches(
+        images=tf.expand_dims(input_image, axis=0),
+        sizes=[1, 128, 128, 1],
+        strides=[1, 64, 64, 1],
+        rates=[1, 1, 1, 1],
+        padding="VALID",
+    )
+    image_patches = tf.reshape(image_patches, [-1, 128, 128, 3])
     input_mask = tf.image.crop_to_bounding_box(
         datapoint["segmentation_mask"],
         offset_height=44,
@@ -24,13 +31,16 @@ def load_image(datapoint):
         target_width=1633,
         target_height=1011,
     )
-    input_mask = tf.image.resize(
-        input_mask,
-        (128, 128),
-        method=tf.image.ResizeMethod.NEAREST_NEIGHBOR,
+    mask_patches = tf.image.extract_patches(
+        images=tf.expand_dims(input_mask, axis=0),
+        sizes=[1, 128, 128, 1],
+        strides=[1, 64, 64, 1],
+        rates=[1, 1, 1, 1],
+        padding="VALID",
     )
+    mask_patches = tf.reshape(mask_patches, [-1, 128, 128, 1])
 
-    input_image, input_mask = normalize(input_image, input_mask)
+    input_image, input_mask = normalize(image_patches, mask_patches)
 
     return input_image, input_mask
 

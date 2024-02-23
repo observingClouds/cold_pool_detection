@@ -26,9 +26,11 @@ dataset, info = tfds.load(params["neural_network"]["dataset"], with_info=True)
 train_images = dataset["train"].map(
     helpers.load_image, num_parallel_calls=tf.data.AUTOTUNE
 )
+train_images = train_images.unbatch()  # unbatch requires a data copy
 test_images = dataset["test"].map(
     helpers.load_image, num_parallel_calls=tf.data.AUTOTUNE
 )  # Fix the function call
+test_images = test_images.unbatch()
 
 BATCH_SIZE = params["neural_network"]["batch_size"]
 BUFFER_SIZE = params["neural_network"]["buffer_size"]
