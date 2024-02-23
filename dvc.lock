@@ -132,9 +132,9 @@ stages:
     outs:
     - path: data/labels
       hash: md5
-      md5: be67ac042fc588b811b62da10a5e168e.dir
-      size: 71562636
-      nfiles: 409
+      md5: 9ae5979262de10dd2c6334f2060539d1.dir
+      size: 1920767407
+      nfiles: 1312
   generate_tfds:
     cmd: cd data; tar -cvzf labels.tar.gz labels; cd sim_cp_tompkins; tfds build --overwrite
       --download_config '{"download_mode":"force_redownload"}' --noforce_checksums_validation
