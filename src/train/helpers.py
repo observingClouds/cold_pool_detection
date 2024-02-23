@@ -11,18 +11,18 @@ def normalize(input_image, input_mask):
 def load_image(datapoint):
     input_image = tf.image.crop_to_bounding_box(
         datapoint["image"],
-        offset_height=13,
-        offset_width=13,
-        target_width=490,
-        target_height=304,
+        offset_height=44,
+        offset_width=44,
+        target_width=1633,
+        target_height=1011,
     )
     input_image = tf.image.resize(input_image, (128, 128))
     input_mask = tf.image.crop_to_bounding_box(
         datapoint["segmentation_mask"],
-        offset_height=13,
-        offset_width=13,
-        target_width=490,
-        target_height=304,
+        offset_height=44,
+        offset_width=44,
+        target_width=1633,
+        target_height=1011,
     )
     input_mask = tf.image.resize(
         input_mask,
