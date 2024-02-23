@@ -141,7 +141,6 @@ model.compile(
     loss=tf.keras.losses.BinaryCrossentropy(from_logits=False),
     metrics=[
         "binary_accuracy",
-        tf.keras.metrics.IoU(target_class_ids=[1], ignore_class=0, num_classes=2),
     ],
 )
 
