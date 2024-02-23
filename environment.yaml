@@ -8,6 +8,7 @@ dependencies:
   - intake-xarray
   - zarr
   - dvc
+  - ruamel.yaml<0.17.22  # https://sourceforge.net/p/ruamel-yaml/tickets/508/
   - s3fs
   - ipython
   - ca-certificates
