@@ -33,15 +33,16 @@ test_images = dataset["test"].map(
 print(f"{len(test_images)} test images available")
 test_images = test_images.unbatch()
 
+
 BATCH_SIZE = params["neural_network"]["batch_size"]
 BUFFER_SIZE = params["neural_network"]["buffer_size"]
 EPOCHS = params["neural_network"]["epochs"]
 VAL_SUBSPLITS = params["neural_network"]["val_subsplit"]
 OUTPUT_CLASSES = params["neural_network"]["output_classes"]
 
-TRAIN_LENGTH = len(test_images)
+TRAIN_LENGTH = len(train_images)
 STEPS_PER_EPOCH = TRAIN_LENGTH // BATCH_SIZE
-VALIDATION_STEPS = info.splits["test"].num_examples // BATCH_SIZE // VAL_SUBSPLITS
+VALIDATION_STEPS = len(test_images) // BATCH_SIZE // VAL_SUBSPLITS
 
 assert STEPS_PER_EPOCH > 0, "BATCH_SIZE might be too large. STEPS_PER_EPOCH==0"
 
@@ -165,7 +166,7 @@ with Live("eval/training_nn") as live:
         epochs=EPOCHS,
         steps_per_epoch=STEPS_PER_EPOCH,
         validation_steps=VALIDATION_STEPS,
-        validation_data=test_batches,  # should potentially be an validation set
+        validation_data=train_batches,  # should potentially be an validation set
         callbacks=[PredictionsCallback(), DVCLiveCallback(live=live)],
     )
     test_loss, test_acc = model.evaluate(test_batches)
