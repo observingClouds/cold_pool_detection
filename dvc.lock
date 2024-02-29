@@ -164,6 +164,6 @@ stages:
     outs:
     - path: eval/training_nn/plots/predictions/
       hash: md5
-      md5: 794d959f70ea4b097828e9058a523bef.dir
-      size: 5169512
-      nfiles: 20
+      md5: 8b93a744eb35c1833cf69f6d2d6f58a2.dir
+      size: 192716
+      nfiles: 1
