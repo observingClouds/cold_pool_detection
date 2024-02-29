@@ -66,7 +66,7 @@ class Augment(tf.keras.layers.Layer):
 
 train_batches = (
     train_images.cache()
-    .shuffle(BUFFER_SIZE)
+    # .shuffle(BUFFER_SIZE)
     .batch(BATCH_SIZE)
     .repeat()
     .map(Augment())
