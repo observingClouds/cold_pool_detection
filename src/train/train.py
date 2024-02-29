@@ -22,9 +22,8 @@ params = dvc.api.params_show()
 plot_dir = "eval/training_nn/plots/predictions/"
 
 dataset, info = tfds.load(params["neural_network"]["dataset"], with_info=True)
-
-train_images = dataset["train"].map(
-    helpers.load_image, num_parallel_calls=tf.data.AUTOTUNE
+train_images = (
+    dataset["train"].map(helpers.load_image, num_parallel_calls=tf.data.AUTOTUNE).take(1)
 )
 print(f"{len(train_images)} train images available")
 train_images = train_images.unbatch()  # unbatch requires a data copy
