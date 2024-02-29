@@ -169,6 +169,6 @@ with Live("eval/training_nn") as live:
         validation_data=train_batches,  # should potentially be an validation set
         callbacks=[PredictionsCallback(), DVCLiveCallback(live=live)],
     )
-    test_loss, test_acc = model.evaluate(test_batches)
+    test_loss, test_acc = model.evaluate(train_batches)
     live.log_metric("test_loss", test_loss, plot=False)
     live.log_metric("test_acc", test_acc, plot=False)
