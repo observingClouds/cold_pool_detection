@@ -76,7 +76,7 @@ train_batches = (
 test_batches = test_images.batch(BATCH_SIZE)
 
 
-for images, masks in train_batches.take(2):
+for images, masks in train_batches.take(1):
     sample_image, sample_mask = images[0], masks[0]
     helpers.display([sample_image, sample_mask])
 
