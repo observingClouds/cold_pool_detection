@@ -27,8 +27,8 @@ train_images = (
 )
 print(f"{len(train_images)} train images available")
 train_images = train_images.unbatch()  # unbatch requires a data copy
-test_images = dataset["test"].map(
-    helpers.load_image, num_parallel_calls=tf.data.AUTOTUNE
+test_images = (
+    dataset["test"].map(helpers.load_image, num_parallel_calls=tf.data.AUTOTUNE).take(1)
 )  # Fix the function call
 print(f"{len(test_images)} test images available")
 test_images = test_images.unbatch()
