@@ -20,6 +20,7 @@ import helpers as helpers  # noqa: E402
 
 params = dvc.api.params_show()
 plot_dir = "eval/training_nn/plots/predictions/"
+continue_learning = False
 
 dataset, info = tfds.load(params["neural_network"]["dataset"], with_info=True)
 train_images = (
@@ -86,11 +87,6 @@ base_model = tf.keras.applications.DenseNet121(
     pooling="avg",
 )
 
-# Load checkpoints from https://github.com/Orion-AI-Lab/EfficientBigEarthNet/tree/main
-# wget "https://www.dropbox.com/s/idenhh7g4j3vapb/checkpoint_densenet121.zip?dl=1"
-checkpoint = tf.train.Checkpoint(base_model)
-checkpoint.restore("models/checkpoints/checkpoint_DenseNet121/checkpoints-4.index")
-
 # Use the activations of these layers
 layer_names = [
     "conv1/relu",  # 60x60 64
@@ -139,14 +135,27 @@ def unet_model(output_channels: int):
     return tf.keras.Model(inputs=inputs, outputs=x)
 
 
+optimizer = "Adam"
 model = unet_model(output_channels=OUTPUT_CLASSES)
 model.compile(
-    optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
+    optimizer=optimizer,
     loss=tf.keras.losses.BinaryCrossentropy(from_logits=False),
     metrics=[
         "binary_accuracy",
     ],
 )
+
+checkpoint = tf.train.Checkpoint(optimizer=optimizer, model=model)
+manager = tf.train.CheckpointManager(
+    checkpoint, directory="models/checkpoints/", max_to_keep=2
+)
+if continue_learning:
+    status = checkpoint.restore(manager.latest_checkpoint)
+else:
+    # Load checkpoints from https://github.com/Orion-AI-Lab/EfficientBigEarthNet/tree/main
+    # wget "https://www.dropbox.com/s/idenhh7g4j3vapb/checkpoint_densenet121.zip?dl=1"
+    checkpoint = tf.train.Checkpoint(base_model)
+    checkpoint.restore("models/checkpoints/checkpoint_DenseNet121/checkpoints-4.index")
 
 
 class PredictionsCallback(tf.keras.callbacks.Callback):
@@ -160,6 +169,11 @@ class PredictionsCallback(tf.keras.callbacks.Callback):
         )
 
 
+class CreateCheckpoint(tf.keras.callbacks.Callback):
+    def on_epoch_end(self, epoch, logs=None):
+        manager.save()
+
+
 with Live("eval/training_nn") as live:
     model_history = model.fit(
         train_batches,
@@ -167,7 +181,11 @@ with Live("eval/training_nn") as live:
         steps_per_epoch=STEPS_PER_EPOCH,
         validation_steps=VALIDATION_STEPS,
         validation_data=train_batches,  # should potentially be an validation set
-        callbacks=[PredictionsCallback(), DVCLiveCallback(live=live)],
+        callbacks=[
+            PredictionsCallback(),
+            DVCLiveCallback(live=live),
+            CreateCheckpoint(),
+        ],
     )
     test_loss, test_acc = model.evaluate(train_batches)
     live.log_metric("test_loss", test_loss, plot=False)
