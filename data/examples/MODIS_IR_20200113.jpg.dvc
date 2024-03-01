@@ -1,7 +1,7 @@
-md5: 853a62679ab4f02ee6e4bb82994a3b7c
+md5: 562632886a58d7d1462361654cb51e16
 frozen: true
 deps:
-- checksum: '"1708727683.697-95560-3378323186"'
+- checksum: '"1709245774.521-95560-3378323186"'
   size: 95560
   hash: md5
   path: https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2020-01-13T00:00:00Z&BBOX=7.5,-60.25,17.000,-45.0000&CRS=EPSG:4326&LAYERS=MODIS_Terra_Brightness_Temp_Band31_Day,Coastlines_15m&WRAP=day,x&FORMAT=image/jpeg&WIDTH=1525&HEIGHT=950&ts=1704992479944

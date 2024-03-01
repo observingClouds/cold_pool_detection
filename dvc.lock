@@ -144,11 +144,11 @@ stages:
     outs:
     - path: data/labels.tar.gz
       hash: md5
-      md5: 1f706dbb80d4c7610721b355458f38c8
-      size: 1918184883
+      md5: 5ae9c3c53d8828383b7dd212e6c15ca0
+      size: 1918184878
     - path: data/sim_cp_tompkins/checksums.tsv
       hash: md5
-      md5: c68977a975b2469f9bcc498c2ba922e1
+      md5: 03f5f9f30e1ff96524bde445a7160b5b
       size: 165
   train_neural_network:
     cmd: python src/train/train.py
