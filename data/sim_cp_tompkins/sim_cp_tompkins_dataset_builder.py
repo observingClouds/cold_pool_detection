@@ -29,9 +29,7 @@ class Builder(tfds.core.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager: tfds.download.DownloadManager):
         """Returns SplitGenerators."""
-        data_dir = dl_manager.download_and_extract(
-            "/Users/haukeschulz/Documents/GitHub/cold_pool_detection/data/labels.tar.gz"
-        )
+        data_dir = dl_manager.download_and_extract("data/labels.tar.gz")
         return {
             tfds.Split.TRAIN: self._generate_examples(
                 path=data_dir, split=0.5, set="train"
