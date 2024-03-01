@@ -1,6 +1,4 @@
 [core]
     remote = data
 ['remote "data"']
-    url = s3://coldpooldetection
-['remote "figures"']
-    url = gdrive://1Hed6nSJUjCZFjsUFbmppga_Tf3sxdbIA
+    url = s3://coldpooldetection2
