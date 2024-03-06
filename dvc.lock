@@ -167,3 +167,14 @@ stages:
       md5: 8b93a744eb35c1833cf69f6d2d6f58a2.dir
       size: 192716
       nfiles: 1
+  download_NN_weights:
+    cmd:
+    - dvc get-url --force "https://www.dropbox.com/s/idenhh7g4j3vapb/checkpoint_densenet121.zip?dl=1"
+    - unzip checkpoint_densenet121.zip
+    - rm checkpoint_densenet121.zip
+    outs:
+    - path: checkpoint_DenseNet121
+      hash: md5
+      md5: 497d0c7a10e093089b261f04e8bab7a0.dir
+      size: 339374803
+      nfiles: 9

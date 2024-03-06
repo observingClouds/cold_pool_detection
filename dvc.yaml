@@ -26,9 +26,20 @@ stages:
     outs:
     - data/labels.tar.gz
     - data/sim_cp_tompkins/checksums.tsv
+  download_NN_weights:
+    wdir: models/checkpoints
+    cmd:
+    - dvc get-url --force "https://www.dropbox.com/s/idenhh7g4j3vapb/checkpoint_densenet121.zip?dl=1"
+    - unzip checkpoint_densenet121.zip
+    - rm checkpoint_densenet121.zip
+    outs:
+    - checkpoint_DenseNet121
   train_neural_network:
     cmd: python src/train/train.py
     params:
     - neural_network
     plots:
     - eval/training_nn/plots/predictions/
+    deps:
+    - models/checkpoints/checkpoint_DenseNet121
+    - data/labels.tar.gz
