@@ -126,18 +126,13 @@ def large_scale_average(da, avg_length=100000):
 def load_datasets():
     # 3D atmospheric variables
     cat = intake.open_catalog(
-        "https://raw.githubusercontent.com/eurec4a/eurec4a-intake/master/catalog.yml"
+        "https://raw.githubusercontent.com/observingClouds/eurec4a-intake/ICON-LES_DOM01_synsat_native/catalog.yml"
     )
     hgrid = cat.simulations.grids["6b59890b-99f3-939b-e76a-0a3ad2e43140"].to_dask()
     ds_3D = cat.simulations.ICON.LES_CampaignDomain_control["3D_DOM01"].to_dask()
-
-    # Synthetic satellite data
-    cat_local = intake.open_catalog(
-        "https://github.com/observingClouds/tape_archive_index/raw/main/catalog.yml"
-    )
-    sat_entry = cat_local["EUREC4A_ICON-LES_control_DOM01_RTTOV_native"]
-    sat_entry.storage_options["preffs"]["prefix"] = "/scratch/m/m300408/"
-    ds_sat = sat_entry.to_dask()
+    ds_sat = cat.simulations.ICON.LES_CampaignDomain_control[
+        "rttov_DOM01_native"
+    ].to_dask()
     ds_sat = ds_sat["synsat_rttov_forward_model_1__abi_ir__goes_16__channel_7"]
 
     return ds_3D, ds_sat, hgrid
