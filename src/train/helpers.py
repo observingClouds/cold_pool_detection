@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 import tensorflow as tf
 
 
@@ -60,6 +61,27 @@ def display(display_list, out=None):
         plt.savefig(out)
     else:
         plt.show()
+
+
+def raster_display(display_list, out=None):
+    fig_img, axs_img = plt.subplots(
+        int(np.ceil(np.sqrt(len(display_list)))),
+        int(np.ceil(np.sqrt(len(display_list)))),
+        figsize=(15, 15),
+    )
+    fig_mask, axs_mask = plt.subplots(
+        int(np.ceil(np.sqrt(len(display_list)))),
+        int(np.ceil(np.sqrt(len(display_list)))),
+        figsize=(15, 15),
+    )
+    for i, (image, mask) in enumerate(display_list):
+        image, mask = image[0], mask[0]
+        axs_img.flatten()[i].imshow(tf.keras.utils.array_to_img(image))
+        axs_img.flatten()[i].axis("off")
+        axs_mask.flatten()[i].imshow(tf.keras.utils.array_to_img(mask))
+        axs_mask.flatten()[i].axis("off")
+    fig_img.show()
+    fig_mask.show()
 
 
 def create_mask(pred_mask):
