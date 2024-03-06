@@ -21,6 +21,7 @@ import helpers as helpers  # noqa: E402
 params = dvc.api.params_show()
 plot_dir = "eval/training_nn/plots/predictions/"
 continue_learning = False
+tf.random.set_seed(1)
 
 dataset, info = tfds.load(params["neural_network"]["dataset"], with_info=True)
 train_images = (
