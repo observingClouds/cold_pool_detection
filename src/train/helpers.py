@@ -1,3 +1,4 @@
+import os
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
@@ -63,7 +64,7 @@ def display(display_list, out=None):
         plt.show()
 
 
-def raster_display(display_list, out=None):
+def raster_display(display_list, out_mask=None, out_img=None):
     fig_img, axs_img = plt.subplots(
         int(np.ceil(np.sqrt(len(display_list)))),
         int(np.ceil(np.sqrt(len(display_list)))),
@@ -80,8 +81,22 @@ def raster_display(display_list, out=None):
         axs_img.flatten()[i].axis("off")
         axs_mask.flatten()[i].imshow(tf.keras.utils.array_to_img(mask))
         axs_mask.flatten()[i].axis("off")
-    fig_img.show()
-    fig_mask.show()
+    if out_img is not None:
+        if out_img is not None:
+            folder_path = os.path.dirname(out_img)
+            if not os.path.exists(folder_path):
+                os.makedirs(folder_path)
+            fig_img.savefig(out_img)
+    else:
+        fig_img.show()
+    if out_mask is not None:
+        if out_mask is not None:
+            folder_path = os.path.dirname(out_mask)
+            if not os.path.exists(folder_path):
+                os.makedirs(folder_path)
+        fig_mask.savefig(out_mask)
+    else:
+        fig_mask.show()
 
 
 def create_mask(pred_mask):

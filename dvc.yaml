@@ -40,6 +40,8 @@ stages:
     - neural_network
     plots:
     - eval/training_nn/plots/predictions/
+    - eval/labels/sample_images.png
+    - eval/labels/sample_masks.png
     deps:
     - models/checkpoints/checkpoint_DenseNet121
     - data/labels.tar.gz
