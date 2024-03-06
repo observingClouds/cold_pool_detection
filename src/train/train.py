@@ -28,11 +28,15 @@ train_images = (
 )
 print(f"{len(train_images)} train images available")
 train_images = train_images.unbatch()  # unbatch requires a data copy
+len_patches_train = len(train_images)  # Note: length of image patches incl. empty masks filtered out next
+train_images = train_images.filter(lambda _, mask: tf.reduce_any(mask is not True))
 test_images = (
     dataset["test"].map(helpers.load_image, num_parallel_calls=tf.data.AUTOTUNE).take(1)
 )  # Fix the function call
 print(f"{len(test_images)} test images available")
 test_images = test_images.unbatch()
+len_patches_test = len(test_images)
+test_images = test_images.filter(lambda _, mask: tf.reduce_any(mask is not True))
 
 
 BATCH_SIZE = params["neural_network"]["batch_size"]
@@ -41,9 +45,9 @@ EPOCHS = params["neural_network"]["epochs"]
 VAL_SUBSPLITS = params["neural_network"]["val_subsplit"]
 OUTPUT_CLASSES = params["neural_network"]["output_classes"]
 
-TRAIN_LENGTH = len(train_images)
+TRAIN_LENGTH = len_patches_train
 STEPS_PER_EPOCH = TRAIN_LENGTH // BATCH_SIZE
-VALIDATION_STEPS = len(test_images) // BATCH_SIZE // VAL_SUBSPLITS
+VALIDATION_STEPS = len_patches_test // BATCH_SIZE // VAL_SUBSPLITS
 
 assert STEPS_PER_EPOCH > 0, "BATCH_SIZE might be too large. STEPS_PER_EPOCH==0"
 
