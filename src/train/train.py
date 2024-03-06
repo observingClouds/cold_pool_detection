@@ -28,7 +28,9 @@ train_images = (
 )
 print(f"{len(train_images)} train images available")
 train_images = train_images.unbatch()  # unbatch requires a data copy
-len_patches_train = len(train_images)  # Note: length of image patches incl. empty masks filtered out next
+len_patches_train = len(
+    train_images
+)  # Note: length of image patches incl. empty masks filtered out next
 train_images = train_images.filter(lambda _, mask: tf.reduce_any(mask is not True))
 test_images = (
     dataset["test"].map(helpers.load_image, num_parallel_calls=tf.data.AUTOTUNE).take(1)
@@ -82,11 +84,13 @@ test_batches = test_images.batch(BATCH_SIZE)
 
 for images, masks in train_batches.take(1):
     sample_image, sample_mask = images[0], masks[0]
-    helpers.display([sample_image, sample_mask])
+    # helpers.display([sample_image, sample_mask])
 
-helpers.raster_display(train_batches.take(100),
-                       out_img="eval/labels/sample_images.png",
-                       out_mask="eval/labels/sample_masks.png")
+helpers.raster_display(
+    train_batches.take(100),
+    out_img="eval/labels/sample_images.png",
+    out_mask="eval/labels/sample_masks.png",
+)
 
 base_model = tf.keras.applications.MobileNetV2(
     input_shape=[128, 128, 3], include_top=False
