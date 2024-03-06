@@ -32,14 +32,14 @@ train_images = train_images.unbatch()  # unbatch requires a data copy
 len_patches_train = len(
     train_images
 )  # Note: length of image patches incl. empty masks filtered out next
-train_images = train_images.filter(lambda _, mask: tf.reduce_any(mask is not True))
+train_images = train_images.filter(lambda _, mask: tf.reduce_any(mask != 1))
 test_images = (
     dataset["test"].map(helpers.load_image, num_parallel_calls=tf.data.AUTOTUNE).take(1)
 )  # Fix the function call
 print(f"{len(test_images)} test images available")
 test_images = test_images.unbatch()
 len_patches_test = len(test_images)
-test_images = test_images.filter(lambda _, mask: tf.reduce_any(mask is not True))
+test_images = test_images.filter(lambda _, mask: tf.reduce_any(mask != 1))
 
 
 BATCH_SIZE = params["neural_network"]["batch_size"]
