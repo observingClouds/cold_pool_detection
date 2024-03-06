@@ -80,7 +80,7 @@ train_batches = (
     .prefetch(buffer_size=tf.data.AUTOTUNE)
 )
 
-test_batches = test_images.batch(BATCH_SIZE)
+test_batches = train_images.batch(BATCH_SIZE)
 
 
 for images, masks in train_batches.take(1):
@@ -196,6 +196,6 @@ with Live("eval/training_nn") as live:
             CreateCheckpoint(),
         ],
     )
-    test_loss, test_acc = model.evaluate(train_batches)
+    test_loss, test_acc = model.evaluate(test_batches)
     live.log_metric("test_loss", test_loss, plot=False)
     live.log_metric("test_acc", test_acc, plot=False)
