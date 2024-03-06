@@ -45,3 +45,5 @@ stages:
     deps:
     - models/checkpoints/checkpoint_DenseNet121
     - data/labels.tar.gz
+    outs:
+    - models/checkpoints/training_checkpoints

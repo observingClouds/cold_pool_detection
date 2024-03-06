@@ -52,6 +52,10 @@ TRAIN_LENGTH = len_patches_train
 STEPS_PER_EPOCH = TRAIN_LENGTH // BATCH_SIZE
 VALIDATION_STEPS = len_patches_test // BATCH_SIZE // VAL_SUBSPLITS
 
+dir_checkpoints = "models/checkpoints/training_checkpoints/"
+if not os.path.exists(dir_checkpoints):
+    os.makedirs(dir_checkpoints)
+
 assert STEPS_PER_EPOCH > 0, "BATCH_SIZE might be too large. STEPS_PER_EPOCH==0"
 
 if not os.path.exists(plot_dir):
@@ -160,7 +164,7 @@ model.compile(
 
 checkpoint = tf.train.Checkpoint(optimizer=optimizer, model=model)
 manager = tf.train.CheckpointManager(
-    checkpoint, directory="models/checkpoints/", max_to_keep=2
+    checkpoint, directory=dir_checkpoints, max_to_keep=1
 )
 if continue_learning:
     status = checkpoint.restore(manager.latest_checkpoint)
@@ -184,7 +188,7 @@ class PredictionsCallback(tf.keras.callbacks.Callback):
 
 class CreateCheckpoint(tf.keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs=None):
-        manager.save()
+        manager.save(checkpoint_number=1)
 
 
 with Live("eval/training_nn") as live:
