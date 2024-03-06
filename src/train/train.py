@@ -143,7 +143,7 @@ def unet_model(output_channels: int):
     return tf.keras.Model(inputs=inputs, outputs=x)
 
 
-optimizer = "Adam"
+optimizer = tf.keras.optimizers.Adam(learning_rate=1e-3)
 model = unet_model(output_channels=OUTPUT_CLASSES)
 model.compile(
     optimizer=optimizer,
