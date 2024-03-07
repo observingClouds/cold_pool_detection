@@ -1,7 +1,7 @@
-md5: b6946224c1d134aa46803a09d524cc80
+md5: f6c2eb95ac7851c2d7c1500c0e3704e4
 frozen: true
 deps:
-- checksum: '"1709245772.384-454937-2993364651"'
+- checksum: '"1709792607.237986-454937-2993364651"'
   size: 454937
   hash: md5
   path: https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2020-01-13T00:00:00Z&BBOX=7.5,-60.25,17.000,-45.0000&CRS=EPSG:4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor,Coastlines_15m&WRAP=day,x&FORMAT=image/jpeg&WIDTH=1525&HEIGHT=950&ts=1704992479944

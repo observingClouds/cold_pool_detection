@@ -152,21 +152,44 @@ stages:
       size: 165
   train_neural_network:
     cmd: python src/train/train.py
+    deps:
+    - path: data/labels.tar.gz
+      hash: md5
+      md5: 5ae9c3c53d8828383b7dd212e6c15ca0
+      size: 1918184878
+    - path: models/checkpoints/checkpoint_DenseNet121
+      hash: md5
+      md5: 497d0c7a10e093089b261f04e8bab7a0.dir
+      size: 339374803
+      nfiles: 9
     params:
       params.yaml:
         neural_network:
           dataset: sim_cp_tompkins:1.0.0
-          batch_size: 10
-          buffer_size: 1000
-          epochs: 1
+          batch_size: 5
+          buffer_size: 1000000
+          epochs: 2
           val_subsplit: 5
           output_classes: 2
     outs:
+    - path: eval/labels/sample_images.png
+      hash: md5
+      md5: ab49fb0f7137c499dac6443574834a68
+      size: 2121349
+    - path: eval/labels/sample_masks.png
+      hash: md5
+      md5: 7d7eb80b5ef38379f78930f5debafe0a
+      size: 174194
     - path: eval/training_nn/plots/predictions/
       hash: md5
-      md5: 8b93a744eb35c1833cf69f6d2d6f58a2.dir
-      size: 192716
-      nfiles: 1
+      md5: 82dd0b95f0b7c445d95c637b1ff04399.dir
+      size: 542620
+      nfiles: 2
+    - path: models/checkpoints/training_checkpoints
+      hash: md5
+      md5: c0ec792484df02cc52b5f1212965a437.dir
+      size: 290281006
+      nfiles: 3
   download_NN_weights:
     cmd:
     - dvc get-url --force "https://www.dropbox.com/s/idenhh7g4j3vapb/checkpoint_densenet121.zip?dl=1"
