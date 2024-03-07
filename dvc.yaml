@@ -1,12 +1,12 @@
 stages:
-  classify_tompkins_2001_example:
-    cmd: python src/tompkins_et_al_2001.py --time "2020-01-10 00:00:00" --output data/examples/tompkins
-    deps:
-    - src/tompkins_et_al_2001.py
-    outs:
-    - data/examples/tompkins
-    params:
-    - tompkins_2001.buoyancy_threshold
+  # classify_tompkins_2001_example:
+  #   cmd: python src/tompkins_et_al_2001.py --time "2020-01-10 00:00:00" --output data/examples/tompkins
+  #   deps:
+  #   - src/tompkins_et_al_2001.py
+  #   outs:
+  #   - data/examples/tompkins
+  #   params:
+  #   - tompkins_2001.buoyancy_threshold
   generate_ground_truth_simulation:
     cmd: python src/label/generate_ground_truth_simulation.py --output data/labels
     deps:
