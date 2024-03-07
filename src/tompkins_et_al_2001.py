@@ -187,7 +187,6 @@ def plot_classification(cold_pool_mask, grid, time, out_dir=None):
 def plot_input(data, grid, time, out_dir=None):
     """Plot input data."""
     fig = plot(data["temp"], grid, vmin=290, vmax=300)
-    fig = plot(data["temp"], grid, vmin=290, vmax=300)
     if out_dir is not None:
         fig.savefig(f"{out_dir}/{time}_temparature.png", bbox_inches="tight")
     return fig
