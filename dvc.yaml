@@ -47,3 +47,8 @@ stages:
     - data/labels.tar.gz
     outs:
     - models/checkpoints/training_checkpoints
+metrics:
+- eval/training_nn/metrics.json
+plots:
+- eval/training_nn/plots/metrics:
+    x: step
