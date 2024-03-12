@@ -28,6 +28,7 @@ dependencies:
   - dvclive
   - openexr
   - openexr-tensorflow
+  - git
   - pip
   - pip:
     - -r requirements.txt
