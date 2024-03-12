@@ -27,7 +27,6 @@ dependencies:
   - cartopy
   - dvclive
   - openexr
-  - openexr-tensorflow
   - git
   - pip
   - pip:
