@@ -25,7 +25,6 @@ dependencies:
   - dvc-gdrive
   - datashader
   - cartopy
-  - keras
   - dvclive
   - openexr
   - openexr-tensorflow
