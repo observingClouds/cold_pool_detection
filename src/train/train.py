@@ -106,7 +106,7 @@ base_model = tf.keras.applications.DenseNet121(
 
 # Use the activations of these layers
 layer_names = [
-    "conv1/relu",  # 60x60 64
+    "conv1_relu",  # 60x60 64
     "conv2_block6_concat",  # 30x30 256
     "conv3_block12_concat",  # 15x15 512
     "conv4_block24_concat",  # 7x7 1024
