@@ -43,6 +43,7 @@ stages:
     - eval/labels/sample_images.png
     - eval/labels/sample_masks.png
     deps:
+    - src/train/train.py
     - models/checkpoints/checkpoint_DenseNet121
     - data/labels.tar.gz
     outs:
