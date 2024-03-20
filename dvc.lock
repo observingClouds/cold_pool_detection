@@ -168,27 +168,27 @@ stages:
           dataset: sim_cp_tompkins:1.0.0
           batch_size: 5
           buffer_size: 1000000
-          epochs: 2
+          epochs: 20
           val_subsplit: 5
           output_classes: 2
     outs:
     - path: eval/labels/sample_images.png
       hash: md5
-      md5: ab49fb0f7137c499dac6443574834a68
-      size: 2121349
+      md5: cb6f8a8d9ce5f8642740111b9dde95b7
+      size: 2243019
     - path: eval/labels/sample_masks.png
       hash: md5
-      md5: 7d7eb80b5ef38379f78930f5debafe0a
-      size: 174194
+      md5: 25559b8e05816363bb36de0094b7c733
+      size: 238116
     - path: eval/training_nn/plots/predictions/
       hash: md5
-      md5: 82dd0b95f0b7c445d95c637b1ff04399.dir
-      size: 542620
-      nfiles: 2
+      md5: 1bb4c7ebc42544fd4a18cc2711f113fe.dir
+      size: 1546662
+      nfiles: 20
     - path: models/checkpoints/training_checkpoints
       hash: md5
-      md5: c0ec792484df02cc52b5f1212965a437.dir
-      size: 290281006
+      md5: dd5fbdba388033d3aa7b60e0fff8d04d.dir
+      size: 290266218
       nfiles: 3
   download_NN_weights:
     cmd:
