@@ -7,6 +7,8 @@ https://www.tensorflow.org/tutorials/images/segmentation
 import os
 import sys
 
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+
 import dvc.api
 import matplotlib.pyplot as plt
 import tensorflow as tf
