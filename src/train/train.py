@@ -29,7 +29,7 @@ train_images = (
     dataset["train"].map(helpers.load_image, num_parallel_calls=tf.data.AUTOTUNE).take(1)
 )
 print(f"{len(train_images)} train images available")
-train_images = train_images.unbatch()  # unbatch requires a data copy
+train_images = train_images.unbatch().take(1)  # unbatch requires a data copy
 len_patches_train = len(
     train_images
 )  # Note: length of image patches incl. empty masks filtered out next
