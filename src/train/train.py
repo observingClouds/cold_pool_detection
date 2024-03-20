@@ -8,6 +8,7 @@ import os
 import sys
 
 import dvc.api
+import matplotlib.pyplot as plt
 import tensorflow as tf
 import tensorflow_datasets as tfds
 from dvclive import Live
