@@ -153,7 +153,7 @@ optimizer = tf.keras.optimizers.Adam(learning_rate=1e-3)
 model = unet_model(output_channels=OUTPUT_CLASSES)
 model.compile(
     optimizer=optimizer,
-    loss=tf.keras.losses.BinaryCrossentropy(from_logits=False),
+    loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
     metrics=[
         "binary_accuracy",
     ],
