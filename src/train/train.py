@@ -109,8 +109,8 @@ for images, masks in train_batches.take(1):
 if dataset_type == 'coldpools':
     display(
         train_batches.take(100),
-        "eval/labels/sample_images.png",
         "eval/labels/sample_masks.png",
+        "eval/labels/sample_images.png",
     )
 elif dataset_type == "example":
     display([sample_image, sample_mask], "eval/labels/sample_images.png")
