@@ -210,8 +210,8 @@ with Live("eval/training_nn") as live:
         train_batches,
         epochs=EPOCHS,
         steps_per_epoch=STEPS_PER_EPOCH,
-        validation_steps=VALIDATION_STEPS,
-        validation_data=train_batches,  # should potentially be an validation set
+        # validation_steps=VALIDATION_STEPS,
+        # validation_data=train_batches,  # should potentially be an validation set
         callbacks=[
             PredictionsCallback(),
             DVCLiveCallback(live=live),

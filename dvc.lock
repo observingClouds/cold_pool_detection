@@ -164,15 +164,15 @@ stages:
       nfiles: 9
     - path: src/train/train.py
       hash: md5
-      md5: da3be63875f7ff2463644a01eb07c4e5
-      size: 6510
+      md5: 3083911551896df3a11543816330afeb
+      size: 6970
     params:
       params.yaml:
         neural_network:
           dataset: sim_cp_tompkins:1.0.0
           batch_size: 1
           buffer_size: 1000000
-          epochs: 20
+          epochs: 200
           val_subsplit: 5
           output_classes: 2
     outs:
@@ -186,13 +186,13 @@ stages:
       size: 54832
     - path: eval/training_nn/plots/predictions/
       hash: md5
-      md5: 2ce6f291803c520ff87b902874f36f68.dir
-      size: 2217716
-      nfiles: 20
+      md5: 54d864715367698c8a21823adb81320a.dir
+      size: 16156324
+      nfiles: 200
     - path: models/checkpoints/training_checkpoints
       hash: md5
-      md5: 52c151185871c869a1236d3642057482.dir
-      size: 63350687
+      md5: 0d9a8dba112bb13eb2119b4a16cd80e2.dir
+      size: 63350662
       nfiles: 3
   download_NN_weights:
     cmd:
