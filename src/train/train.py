@@ -7,8 +7,6 @@ https://www.tensorflow.org/tutorials/images/segmentation
 import os
 import sys
 
-os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
-
 import dvc.api
 import matplotlib.pyplot as plt
 import tensorflow as tf
@@ -173,7 +171,7 @@ model.compile(
     optimizer=optimizer,
     loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
     metrics=[
-        "binary_accuracy",
+        "binary_accuracy", tf.keras.metrics.MeanIoU(num_classes=2, sparse_y_true=False, sparse_y_pred=False)
     ],
 )
 
@@ -219,6 +217,6 @@ with Live("eval/training_nn") as live:
             CreateCheckpoint(),
         ],
     )
-    test_loss, test_acc = model.evaluate(test_batches)
+    test_loss, test_acc, test_iou = model.evaluate(test_batches)
     live.log_metric("test_loss", test_loss, plot=False)
     live.log_metric("test_acc", test_acc, plot=False)
