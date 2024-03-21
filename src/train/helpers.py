@@ -9,8 +9,26 @@ def normalize(input_image, input_mask):
     input_mask = tf.cast(input_mask, tf.float32) / 255.0
     return input_image, input_mask
 
+def load_image_resize(datapoint):
+  """
+  Resizing input images to match neural network input layer size.
+  """
+  input_image = tf.image.resize(datapoint['image'], (128, 128))
+  input_mask = tf.image.resize(
+    datapoint['segmentation_mask'],
+    (128, 128),
+    method = tf.image.ResizeMethod.NEAREST_NEIGHBOR,
+  )
 
-def load_image(datapoint):
+  input_image, input_mask = normalize(input_image, input_mask)
+
+  return input_image, input_mask
+
+def load_image_crop_n_patch(datapoint):
+    """
+    Crop artificial boundary layer caused by matplotlib figures,
+    create patches of specific size matching input layer of model.
+    """
     input_image = tf.image.crop_to_bounding_box(
         datapoint["image"],
         offset_height=44,
@@ -48,7 +66,7 @@ def load_image(datapoint):
     return input_image, input_mask
 
 
-def display(display_list, out=None):
+def display(display_list, out=None, _=None):
     plt.figure(figsize=(15, 15))
 
     title = ["Input Image", "True Mask", "Predicted Mask"]

@@ -27,20 +27,33 @@ continue_learning = False
 tf.random.set_seed(1)
 
 dataset, info = tfds.load(params["neural_network"]["dataset"], with_info=True)
+
+if 'sim_cp' in params["neural_network"]["dataset"]:
+    dataset_type = 'coldpools'
+    loader = helpers.load_image_crop_n_patch
+    display = helpers.raster_display
+else:
+    dataset_type = 'example'
+    loader = helpers.load_image_resize
+    display = helpers.display
+
 train_images = (
-    dataset["train"].map(helpers.load_image, num_parallel_calls=tf.data.AUTOTUNE).take(1)
+    dataset["train"].map(loader, num_parallel_calls=tf.data.AUTOTUNE).take(1)
 )
 print(f"{len(train_images)} train images available")
-train_images = train_images.unbatch().take(1)  # unbatch requires a data copy
+if loader.__name__ == 'load_image_crop_n_patch':
+    train_images = train_images.unbatch()
+train_images = train_images.take(1)  # unbatch requires a data copy
 len_patches_train = len(
     train_images
 )  # Note: length of image patches incl. empty masks filtered out next
 train_images = train_images.filter(lambda _, mask: tf.reduce_any(mask != 1))
 test_images = (
-    dataset["test"].map(helpers.load_image, num_parallel_calls=tf.data.AUTOTUNE).take(1)
+    dataset["test"].map(loader, num_parallel_calls=tf.data.AUTOTUNE).take(1)
 )  # Fix the function call
 print(f"{len(test_images)} test images available")
-test_images = test_images.unbatch()
+if loader.__name__ == 'load_image_crop_n_patch':
+    test_images = test_images.unbatch()
 len_patches_test = len(test_images)
 test_images = test_images.filter(lambda _, mask: tf.reduce_any(mask != 1))
 
@@ -92,13 +105,15 @@ test_batches = train_images.batch(BATCH_SIZE)
 
 for images, masks in train_batches.take(1):
     sample_image, sample_mask = images[0], masks[0]
-    # helpers.display([sample_image, sample_mask])
 
-helpers.raster_display(
-    train_batches.take(100),
-    out_img="eval/labels/sample_images.png",
-    out_mask="eval/labels/sample_masks.png",
-)
+if dataset_type == 'coldpools':
+    display(
+        train_batches.take(100),
+        "eval/labels/sample_images.png",
+        "eval/labels/sample_masks.png",
+    )
+elif dataset_type == "example":
+    display([sample_image, sample_mask], "eval/labels/sample_images.png")
 
 base_model = tf.keras.applications.MobileNetV2(
     input_shape=[128, 128, 3], include_top=False
