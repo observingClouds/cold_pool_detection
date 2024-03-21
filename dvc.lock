@@ -164,35 +164,35 @@ stages:
       nfiles: 9
     - path: src/train/train.py
       hash: md5
-      md5: 3083911551896df3a11543816330afeb
-      size: 6970
+      md5: 9e0a49849da6fcd66aecc0153af83d4d
+      size: 7204
     params:
       params.yaml:
         neural_network:
           dataset: sim_cp_tompkins:1.0.0
           batch_size: 1
           buffer_size: 1000000
-          epochs: 200
+          epochs: 100
           val_subsplit: 5
           output_classes: 2
     outs:
     - path: eval/labels/sample_images.png
       hash: md5
-      md5: c98f8a00f972d1f1f59f982140c81a76
-      size: 182370
+      md5: 20148e6636c4b84a08ef66477383d2a4
+      size: 1758818
     - path: eval/labels/sample_masks.png
       hash: md5
-      md5: 9f673c051db399c641d9dff437b0f725
-      size: 54832
+      md5: 306503fefd1e16cfcda529b4d373e2ed
+      size: 261045
     - path: eval/training_nn/plots/predictions/
       hash: md5
-      md5: 54d864715367698c8a21823adb81320a.dir
-      size: 16156324
-      nfiles: 200
+      md5: aece1a447afd72bd882d00003448bae3.dir
+      size: 8021569
+      nfiles: 100
     - path: models/checkpoints/training_checkpoints
       hash: md5
-      md5: 0d9a8dba112bb13eb2119b4a16cd80e2.dir
-      size: 63350662
+      md5: c8cb98e0ea5a3b4b242408d06d0821dc.dir
+      size: 63350686
       nfiles: 3
   download_NN_weights:
     cmd:

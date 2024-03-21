@@ -45,7 +45,7 @@ train_images = dataset["train"].map(loader, num_parallel_calls=tf.data.AUTOTUNE)
 print(f"{len(train_images)} train images available")
 if loader.__name__ == "load_image_crop_n_patch":
     train_images = train_images.unbatch()  # unbatch requires a data copy
-train_images = train_images.take(1)
+train_images = train_images  # .take(1)
 len_patches_train = len(
     train_images
 )  # Note: length of image patches incl. empty masks filtered out next
