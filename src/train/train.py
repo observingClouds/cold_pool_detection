@@ -26,6 +26,12 @@ plot_dir = "eval/training_nn/plots/predictions/"
 continue_learning = False
 tf.random.set_seed(1)
 
+BATCH_SIZE = params["neural_network"]["batch_size"]
+BUFFER_SIZE = params["neural_network"]["buffer_size"]
+EPOCHS = params["neural_network"]["epochs"]
+VAL_SUBSPLITS = params["neural_network"]["val_subsplit"]
+OUTPUT_CLASSES = params["neural_network"]["output_classes"]
+
 dataset, info = tfds.load(params["neural_network"]["dataset"], with_info=True)
 
 if 'sim_cp' in params["neural_network"]["dataset"]:
@@ -42,11 +48,12 @@ train_images = (
 )
 print(f"{len(train_images)} train images available")
 if loader.__name__ == 'load_image_crop_n_patch':
-    train_images = train_images.unbatch()
-train_images = train_images.take(1)  # unbatch requires a data copy
+    train_images = train_images.unbatch()  # unbatch requires a data copy
+train_images = train_images.take(6)
 len_patches_train = len(
     train_images
 )  # Note: length of image patches incl. empty masks filtered out next
+assert VAL_SUBSPLITS < len_patches_train, "Validation subsplits must be smaller than number of images."
 train_images = train_images.filter(lambda _, mask: tf.reduce_any(mask != 1))
 test_images = (
     dataset["test"].map(loader, num_parallel_calls=tf.data.AUTOTUNE).take(1)
@@ -58,15 +65,9 @@ len_patches_test = len(test_images)
 test_images = test_images.filter(lambda _, mask: tf.reduce_any(mask != 1))
 
 
-BATCH_SIZE = params["neural_network"]["batch_size"]
-BUFFER_SIZE = params["neural_network"]["buffer_size"]
-EPOCHS = params["neural_network"]["epochs"]
-VAL_SUBSPLITS = params["neural_network"]["val_subsplit"]
-OUTPUT_CLASSES = params["neural_network"]["output_classes"]
-
 TRAIN_LENGTH = len_patches_train
 STEPS_PER_EPOCH = TRAIN_LENGTH // BATCH_SIZE
-VALIDATION_STEPS = len_patches_test // BATCH_SIZE // VAL_SUBSPLITS
+VALIDATION_STEPS = len_patches_train // BATCH_SIZE // VAL_SUBSPLITS
 
 dir_checkpoints = "models/checkpoints/training_checkpoints/"
 if not os.path.exists(dir_checkpoints):
@@ -210,8 +211,8 @@ with Live("eval/training_nn") as live:
         train_batches,
         epochs=EPOCHS,
         steps_per_epoch=STEPS_PER_EPOCH,
-        # validation_steps=VALIDATION_STEPS,
-        # validation_data=train_batches,  # should potentially be an validation set
+        validation_steps=VALIDATION_STEPS,
+        validation_data=train_batches,  # should potentially be an validation set
         callbacks=[
             PredictionsCallback(),
             DVCLiveCallback(live=live),
