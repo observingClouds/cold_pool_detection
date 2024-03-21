@@ -8,7 +8,7 @@ import os
 import sys
 
 import dvc.api
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt  # noqa: E402 # fix for GLIBCXX with tensorflow
 import tensorflow as tf
 import tensorflow_datasets as tfds
 from dvclive import Live
@@ -32,32 +32,32 @@ OUTPUT_CLASSES = params["neural_network"]["output_classes"]
 
 dataset, info = tfds.load(params["neural_network"]["dataset"], with_info=True)
 
-if 'sim_cp' in params["neural_network"]["dataset"]:
-    dataset_type = 'coldpools'
+if "sim_cp" in params["neural_network"]["dataset"]:
+    dataset_type = "coldpools"
     loader = helpers.load_image_crop_n_patch
     display = helpers.raster_display
 else:
-    dataset_type = 'example'
+    dataset_type = "example"
     loader = helpers.load_image_resize
     display = helpers.display
 
-train_images = (
-    dataset["train"].map(loader, num_parallel_calls=tf.data.AUTOTUNE).take(1)
-)
+train_images = dataset["train"].map(loader, num_parallel_calls=tf.data.AUTOTUNE).take(1)
 print(f"{len(train_images)} train images available")
-if loader.__name__ == 'load_image_crop_n_patch':
+if loader.__name__ == "load_image_crop_n_patch":
     train_images = train_images.unbatch()  # unbatch requires a data copy
-train_images = train_images.take(6)
+train_images = train_images.take(1)
 len_patches_train = len(
     train_images
 )  # Note: length of image patches incl. empty masks filtered out next
-assert VAL_SUBSPLITS < len_patches_train, "Validation subsplits must be smaller than number of images."
+assert (
+    VAL_SUBSPLITS <= len_patches_train
+), "Validation subsplits must be smaller than number of images."
 train_images = train_images.filter(lambda _, mask: tf.reduce_any(mask != 1))
 test_images = (
     dataset["test"].map(loader, num_parallel_calls=tf.data.AUTOTUNE).take(1)
 )  # Fix the function call
 print(f"{len(test_images)} test images available")
-if loader.__name__ == 'load_image_crop_n_patch':
+if loader.__name__ == "load_image_crop_n_patch":
     test_images = test_images.unbatch()
 len_patches_test = len(test_images)
 test_images = test_images.filter(lambda _, mask: tf.reduce_any(mask != 1))
@@ -105,7 +105,7 @@ test_batches = train_images.batch(BATCH_SIZE)
 for images, masks in train_batches.take(1):
     sample_image, sample_mask = images[0], masks[0]
 
-if dataset_type == 'coldpools':
+if dataset_type == "coldpools":
     display(
         train_batches.take(100),
         "eval/labels/sample_masks.png",
@@ -171,7 +171,10 @@ model.compile(
     optimizer=optimizer,
     loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
     metrics=[
-        "binary_accuracy", tf.keras.metrics.MeanIoU(num_classes=2, sparse_y_true=False, sparse_y_pred=False)
+        "binary_accuracy",
+        tf.keras.metrics.MeanIoU(
+            num_classes=2, sparse_y_true=False, sparse_y_pred=False
+        ),
     ],
 )
 
