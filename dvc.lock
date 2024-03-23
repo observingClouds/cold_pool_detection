@@ -172,7 +172,7 @@ stages:
           dataset: sim_cp_tompkins:1.0.0
           batch_size: 1
           buffer_size: 1000000
-          epochs: 100
+          epochs: 51
           val_subsplit: 5
           output_classes: 2
     outs:
@@ -186,17 +186,17 @@ stages:
       size: 261045
     - path: eval/training_nn/plots/predictions/
       hash: md5
-      md5: 1ad5277e7c5927037308db8d7cb0906e.dir
-      size: 7977117
-      nfiles: 100
+      md5: 670737a214b6784d240b50b0e515d446.dir
+      size: 4034180
+      nfiles: 51
     - path: models/checkpoints/training_checkpoints
       hash: md5
-      md5: 4f9f0cb38f1cd67333ee93d54deb3aa3.dir
-      size: 63350685
+      md5: a49c74a35d4cafeb6bd7d87136b0d341.dir
+      size: 63350687
       nfiles: 3
     - path: models/models/trained_model.keras
       hash: md5
-      md5: 3514f01da29e91fbf33e2277dc3af1eb
+      md5: 2b3d5a475d01e3cbaa295e7d8fe9f5c1
       size: 63876196
   download_NN_weights:
     cmd:
