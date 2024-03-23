@@ -164,8 +164,8 @@ stages:
       nfiles: 9
     - path: src/train/train.py
       hash: md5
-      md5: 9e0a49849da6fcd66aecc0153af83d4d
-      size: 7204
+      md5: 8622c30b11a87166b6c77254f7f780ef
+      size: 7252
     params:
       params.yaml:
         neural_network:
@@ -186,14 +186,18 @@ stages:
       size: 261045
     - path: eval/training_nn/plots/predictions/
       hash: md5
-      md5: aece1a447afd72bd882d00003448bae3.dir
-      size: 8021569
+      md5: 1ad5277e7c5927037308db8d7cb0906e.dir
+      size: 7977117
       nfiles: 100
     - path: models/checkpoints/training_checkpoints
       hash: md5
-      md5: c8cb98e0ea5a3b4b242408d06d0821dc.dir
-      size: 63350686
+      md5: 4f9f0cb38f1cd67333ee93d54deb3aa3.dir
+      size: 63350685
       nfiles: 3
+    - path: models/models/trained_model.keras
+      hash: md5
+      md5: 3514f01da29e91fbf33e2277dc3af1eb
+      size: 63876196
   download_NN_weights:
     cmd:
     - dvc get-url --force "https://www.dropbox.com/s/idenhh7g4j3vapb/checkpoint_densenet121.zip?dl=1"
