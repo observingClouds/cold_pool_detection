@@ -1,5 +1,5 @@
 # Illuminating the role of cold-pools in structuring shallow convection
-![Static Badge](https://img.shields.io/badge/Studio-Link_to_NN_training_metrics?logo=dvc&color=white&link=https%3A%2F%2Fstudio.iterative.ai%2Fuser%2FobservingClouds%2Fprojects%2Fcold_pool_detection-yg8z322abh)
+[![Static Badge](https://img.shields.io/badge/Studio-Link_to_NN_training_metrics?logo=dvc&color=white)](https://studio.iterative.ai/user/observingClouds/projects/cold_pool_detection-yg8z322abh)
 
 This repository is work in progress and developed during the UW eScience Data Science Incubator project 2024.
 
