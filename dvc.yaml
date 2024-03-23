@@ -48,6 +48,7 @@ stages:
     - data/labels.tar.gz
     outs:
     - models/checkpoints/training_checkpoints
+    - models/models/trained_model.keras
 metrics:
 - eval/training_nn/metrics.json
 plots:
