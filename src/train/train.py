@@ -221,6 +221,7 @@ with Live("eval/training_nn") as live:
         ],
     )
     test_loss, test_acc, test_iou = model.evaluate(test_batches)
-    live.log_metric("test_loss", test_loss, plot=False)
-    live.log_metric("test_acc", test_acc, plot=False)
+    live.log_metric("test_loss", test_loss, plot=True)
+    live.log_metric("test_acc", test_acc, plot=True)
+    live.log_metric("test_iou", test_iou, plot=True)
 model.save("models/models/trained_model.keras")
