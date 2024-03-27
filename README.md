@@ -73,6 +73,13 @@ git config --global user.name ${USER}
 git config --global user.email $YOUREMAIL
 ```
 
+and on a restarted instance:
+```bash
+cd cold_pool_detection/
+mamba activate cpd
+dvc repro train_neural_network
+```
+
 ## Labeling methods
 ### Brilouet et al. (2023) based on SAR backscatter
 The method has been programmed following instructions given in the manuscript and is available at in [gradient_detection_SAR_brilouet_etal_2023.py](src/gradient_detection_SAR_brilouet_etal_2023.py). Figures given in the manuscript are reprodued and available on the [DVC Google Drive `figures` remote](https://drive.google.com/drive/folders/1va9TbLCB5q19ASfD0At3meXLl7xSUuI7).
