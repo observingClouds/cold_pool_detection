@@ -1,4 +1,6 @@
 # Illuminating the role of cold-pools in structuring shallow convection
+[![Static Badge](https://img.shields.io/badge/Studio-Link_to_NN_training_metrics?logo=dvc&color=white)](https://studio.iterative.ai/user/observingClouds/projects/cold_pool_detection-yg8z322abh)
+
 This repository is work in progress and developed during the UW eScience Data Science Incubator project 2024.
 
 ## Project description
@@ -44,6 +46,38 @@ The workflow assumes that the python environment as given in `environment.yaml` 
 
 ```
 mamba env create -f environment.yaml
+```
+
+### Neural network training on AWS EC2 instances
+Training of the neural networks has been done on EC2 instances on AWS. The instances used here were `g4dn.xlarge` with the [Deep Learning OSS Nvidia Driver AMI GPU TensorFlow 2.15 (Amazon Linux 2) 20240319](https://us-west-2.console.aws.amazon.com/ec2/home?region=us-west-2#Images:visibility=public-images;imageId=ami-0407450c30b2b39fd). The DL-AMI comes with installed NVIDIA drivers to ease installation.
+
+The following code gives guidance on how to perform the training on a new instance:
+
+```bash
+wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
+bash Miniforge3-Linux-x86_64.sh
+source ~/.bashrc
+mamba install git
+#add machine key to git
+git clone git@github.com:observingClouds/cold_pool_detection.git
+cd cold_pool_detection/
+git checkout simulation_only
+mamba env create -f environment.yaml  # pip dependencies are ignored by micromamba (https://github.com/mamba-org/mamba/issues/2221)
+mamba activate cpd
+#pip install -r requirements.txt
+export AWS_ACCESS_KEY_ID=<KEYTOS3>
+export AWS_SECRET_ACCESS_KEY=<SECRETTOS3>
+dvc pull
+tfds build data/sim_cp_tompkins
+git config --global user.name ${USER}
+git config --global user.email $YOUREMAIL
+```
+
+and on a restarted instance:
+```bash
+cd cold_pool_detection/
+mamba activate cpd
+dvc repro train_neural_network
 ```
 
 ## Labeling methods
