@@ -2,11 +2,13 @@ name: cpd
 channels:
   - conda-forge
 dependencies:
-  - python
+  - python<=3.11
   - xarray
+  - intake<2.0.0
   - intake-xarray
   - zarr
   - dvc
+  - ruamel.yaml<0.17.22  # https://sourceforge.net/p/ruamel-yaml/tickets/508/
   - s3fs
   - ipython
   - ca-certificates
@@ -15,11 +17,17 @@ dependencies:
   - dvc-s3
   - matplotlib
   - satpy
+  - remotezip
   - ipdb
   - pre-commit
   - pyresample
   - xee
   - dvc-gdrive
+  - datashader
+  - cartopy
+  - dvclive
+  - openexr
+  - git
   - pip
   - pip:
-    - asf_search
+    - -r requirements.txt

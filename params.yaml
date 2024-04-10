@@ -1,0 +1,13 @@
+tompkins_2001:
+  buoyancy_threshold: 0.05
+  avg_length: 100000
+  height: 67
+ground_truth_simulation:
+  method: tompkins_2001
+neural_network:
+  dataset: sim_cp_tompkins:1.0.0
+  batch_size: 1
+  buffer_size: 1000000
+  epochs: 51
+  val_subsplit: 5
+  output_classes: 2

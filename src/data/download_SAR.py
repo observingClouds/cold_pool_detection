@@ -31,7 +31,15 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-token = getpass.getpass("EDL Token (login to earthdata.nasa.gov to get personal token):")
+token_file = os.path.expanduser("~/.edl_credentials")
+if os.path.exists(token_file):
+    with open(token_file, "r") as file:
+        token = file.read().strip()
+else:
+    token = getpass.getpass(
+        "EDL Token (login to earthdata.nasa.gov to get personal token):"
+    )
+
 token_session = asf.ASFSession().auth_with_token(token)
 
 lats = (7.5, 17)
